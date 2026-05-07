@@ -1,6 +1,7 @@
 import { Input, Tabs } from "antd";
 import type { Topic } from "@/types";
 import TopicTagSelect from "./TopicTagSelect";
+import { useTranslation } from '@/locale';
 
 const { TextArea } = Input;
 
@@ -19,29 +20,30 @@ export default function ClauseEditor({
   selectedTopicIds,
   onTopicChange,
 }: ClauseEditorProps) {
+  const { t } = useTranslation();
   const tabItems = [
     {
       key: "fa",
-      label: "فارسی",
+      label: t("common.persian"),
       children: (
         <TextArea
           dir="rtl"
           rows={8}
           value={value.fa}
           onChange={(e) => onChange({ ...value, fa: e.target.value })}
-          placeholder="متن بند به فارسی..."
+          placeholder={t("constitutions.clause_placeholder_fa")}
         />
       ),
     },
     {
       key: "en",
-      label: "English",
+      label: t("common.english"),
       children: (
         <TextArea
           rows={8}
           value={value.en}
           onChange={(e) => onChange({ ...value, en: e.target.value })}
-          placeholder="Clause text in English..."
+          placeholder={t("constitutions.clause_placeholder_en")}
         />
       ),
     },

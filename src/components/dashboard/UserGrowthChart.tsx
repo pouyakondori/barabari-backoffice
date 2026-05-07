@@ -1,4 +1,5 @@
 import { Card, Skeleton } from "antd";
+import { useTranslation } from '@/locale';
 import {
   Line,
   LineChart,
@@ -22,8 +23,9 @@ export default function UserGrowthChart({
   data,
   loading = false,
 }: UserGrowthChartProps) {
+  const { t } = useTranslation();
   return (
-    <Card title="User Growth">
+    <Card title={t("charts.user_growth")}>
       {loading ? (
         <Skeleton active paragraph={{ rows: 6 }} />
       ) : (
@@ -37,7 +39,7 @@ export default function UserGrowthChart({
               dataKey="count"
               stroke="#1890ff"
               strokeWidth={2}
-              name="New Users"
+              name={t("charts.new_users")}
             />
           </LineChart>
         </ResponsiveContainer>

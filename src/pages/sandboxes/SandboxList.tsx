@@ -8,6 +8,7 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import { usePagination } from '@/hooks/usePagination';
 import { useDebounce } from '@/hooks/useDebounce';
 import { formatDate, localized } from '@/utils/formatters';
+import { useTranslation } from '@/locale';
 import { ADMIN_SANDBOXES } from '@/graphql/queries/sandboxes';
 import { ADMIN_DELETE_SANDBOX } from '@/graphql/mutations/sandboxes';
 import type { PaginatedResult } from '@/types';
@@ -30,6 +31,7 @@ interface Sandbox {
 }
 
 export default function SandboxList() {
+  const { t } = useTranslation();
   const pagination = usePagination();
   const [search, setSearch] = useState('');
   const [deleteTarget, setDeleteTarget] = useState<Sandbox | null>(null);
@@ -50,7 +52,7 @@ export default function SandboxList() {
   const [deleteSandbox, { loading: deleting }] = useMutation(ADMIN_DELETE_SANDBOX, {
     refetchQueries: [{ query: ADMIN_SANDBOXES }],
     onCompleted: () => {
-      message.success('Sandbox deleted successfully');
+      message.success(t("sandboxes.sandbox_deleted"));
       setDeleteTarget(null);
     },
     onError: (err: any) => message.error(err.message),
@@ -58,7 +60,7 @@ export default function SandboxList() {
 
   const columns: ColumnsType<Sandbox> = [
     {
-      title: 'User',
+      title: t("sandboxes.user"),
       dataIndex: 'user',
       render: (_: unknown, record: Sandbox) => (
         <div>
@@ -71,16 +73,16 @@ export default function SandboxList() {
       ),
     },
     {
-      title: 'Title',
+      title: t("sandboxes.title"),
       dataIndex: 'title',
     },
     {
-      title: 'Clauses',
+      title: t("sandboxes.clauses"),
       dataIndex: 'clauseCount',
       width: 90,
     },
     {
-      title: 'Created',
+      title: t("sandboxes.created"),
       dataIndex: 'createdAt',
       width: 130,
       render: (date: string) => formatDate(date),
@@ -89,7 +91,7 @@ export default function SandboxList() {
       defaultSortOrder: 'descend',
     },
     {
-      title: 'Actions',
+      title: t("sandboxes.actions"),
       width: 120,
       render: (_: unknown, record: Sandbox) => (
         <Space>
@@ -118,7 +120,7 @@ export default function SandboxList() {
         columns={columns}
         dataSource={sandboxes}
         loading={loading}
-        searchPlaceholder="Search by user or title..."
+        searchPlaceholder={t("sandboxes.search_placeholder")}
         onSearch={setSearch}
         pagination={{
           current: pagination.page,
@@ -130,20 +132,20 @@ export default function SandboxList() {
 
       <Modal
         open={!!viewTarget}
-        title={`Sandbox: ${viewTarget?.title ?? ''}`}
+        title={`${t("sandboxes.sandbox")}: ${viewTarget?.title ?? ''}`}
         onCancel={() => setViewTarget(null)}
-        footer={<Button onClick={() => setViewTarget(null)}>Close</Button>}
+        footer={<Button onClick={() => setViewTarget(null)}>{t("sandboxes.close")}</Button>}
         width={640}
       >
         {viewTarget && (
           <div>
             <div style={{ marginBottom: 16 }}>
-              <Text type="secondary">User: </Text>
+              <Text type="secondary">{t("sandboxes.user_label")} </Text>
               <Text strong>{viewTarget.user.displayName}</Text>
               <Text type="secondary"> ({viewTarget.user.email})</Text>
             </div>
             <div style={{ marginBottom: 16 }}>
-              <Text type="secondary">Created: </Text>
+              <Text type="secondary">{t("sandboxes.created_label")} </Text>
               <Text>{formatDate(viewTarget.createdAt)}</Text>
             </div>
             <div>
@@ -171,8 +173,8 @@ export default function SandboxList() {
 
       <ConfirmModal
         open={!!deleteTarget}
-        title="Delete Sandbox"
-        content={`Are you sure you want to delete "${deleteTarget?.title ?? ''}"? This action cannot be undone.`}
+        title={t("sandboxes.delete_sandbox")}
+        content={`${t("sandboxes.confirm_delete")} "${deleteTarget?.title ?? ''}"?`}
         onConfirm={() => {
           if (deleteTarget) {
             deleteSandbox({ variables: { id: deleteTarget.id } });

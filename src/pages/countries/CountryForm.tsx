@@ -22,6 +22,7 @@ import BilingualInput from '@/components/common/BilingualInput';
 import SlugInput from '@/components/common/SlugInput';
 import ImageUpload from '@/components/common/ImageUpload';
 import { ROUTES } from '@/utils/constants';
+import { useTranslation } from '@/locale';
 
 const { Title } = Typography;
 
@@ -41,6 +42,7 @@ interface CountryFormValues {
 }
 
 export function CountryForm() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [form] = Form.useForm<CountryFormValues>();
@@ -104,19 +106,19 @@ export function CountryForm() {
     try {
       if (isEdit) {
         await updateCountry({ variables: { id, input } });
-        void message.success('کشور بروزرسانی شد');
+        void message.success(t("countries.country_updated"));
       } else {
         await createCountry({ variables: { input } });
-        void message.success('کشور ایجاد شد');
+        void message.success(t("countries.country_created"));
       }
       navigate(ROUTES.COUNTRIES);
     } catch {
-      void message.error('خطا در ذخیره کشور');
+      void message.error(t("countries.save_error"));
     }
   }, [isEdit, id, createCountry, updateCountry, navigate]);
 
   if (isEdit && loadLoading) return <Spin size="large" style={{ display: 'block', margin: '100px auto' }} />;
-  if (loadError) return <Result status="error" title="خطا در بارگذاری کشور" subTitle={loadError.message} />;
+  if (loadError) return <Result status="error" title={t("countries.loading_error")} subTitle={loadError.message} />;
 
   return (
     <div>
@@ -126,10 +128,10 @@ export function CountryForm() {
         onClick={() => navigate(ROUTES.COUNTRIES)}
         style={{ marginBottom: 16, padding: 0 }}
       >
-        بازگشت به لیست کشورها
+        {t("countries.back_to_list")}
       </Button>
 
-      <Title level={4}>{isEdit ? 'ویرایش کشور' : 'افزودن کشور جدید'}</Title>
+      <Title level={4}>{isEdit ? t("countries.edit_country") : t("countries.add_new_country")}</Title>
 
       <Form<CountryFormValues>
         form={form}
@@ -137,9 +139,9 @@ export function CountryForm() {
         onFinish={(v) => void handleSubmit(v)}
         initialValues={{ authors: [], amendments: [] }}
       >
-        <Card title="اطلاعات اصلی" style={{ marginBottom: 24 }}>
+        <Card title={t("countries.main_info")} style={{ marginBottom: 24 }}>
           <BilingualInput
-            label="نام کشور"
+            label={t("countries.country_name")}
             value={form.getFieldValue('name') ?? { fa: '', en: '' }}
             onChange={(v) => {
               form.setFieldValue('name', v);
@@ -155,57 +157,57 @@ export function CountryForm() {
           <ImageUpload
             value={form.getFieldValue('flag') ?? ''}
             onChange={(v) => form.setFieldValue('flag', v)}
-            label="پرچم"
+            label={t("countries.flag_label")}
           />
           <BilingualInput
-            label="خلاصه"
+            label={t("countries.abstract")}
             value={form.getFieldValue('abstract') ?? { fa: '', en: '' }}
             onChange={(v) => form.setFieldValue('abstract', v)}
             textarea
           />
 
           <Space size="large">
-            <Form.Item name="population" label="جمعیت">
+            <Form.Item name="population" label={t("countries.population")}>
               <InputNumber min={0} style={{ width: 200 }} />
             </Form.Item>
-            <Form.Item name="countryCode" label="کد کشور">
+            <Form.Item name="countryCode" label={t("countries.country_code")}>
               <Input style={{ width: 100 }} placeholder="IR" />
             </Form.Item>
           </Space>
 
           <Space size="large">
-            <Form.Item name="lat" label="عرض جغرافیایی">
+            <Form.Item name="lat" label={t("countries.latitude")}>
               <InputNumber step={0.0001} style={{ width: 200 }} />
             </Form.Item>
-            <Form.Item name="lng" label="طول جغرافیایی">
+            <Form.Item name="lng" label={t("countries.longitude")}>
               <InputNumber step={0.0001} style={{ width: 200 }} />
             </Form.Item>
           </Space>
 
           <Space size="large" style={{ width: '100%' }}>
-            <Form.Item name="podcastUrl" label="لینک پادکست">
+            <Form.Item name="podcastUrl" label={t("countries.podcast_link")}>
               <Input placeholder="https://..." style={{ width: 300 }} />
             </Form.Item>
-            <Form.Item name="videoUrl" label="لینک ویدیو">
+            <Form.Item name="videoUrl" label={t("countries.video_link")}>
               <Input placeholder="https://..." style={{ width: 300 }} />
             </Form.Item>
           </Space>
         </Card>
 
-        <Card title="نویسندگان" style={{ marginBottom: 24 }}>
+        <Card title={t("countries.authors")} style={{ marginBottom: 24 }}>
           <Form.List name="authors">
             {(fields, { add, remove }) => (
               <>
                 {fields.map((field) => (
                   <div key={field.key} style={{ border: '1px solid #f0f0f0', padding: 16, marginBottom: 16, borderRadius: 8 }}>
                     <BilingualInput
-                      label="نام نویسنده"
+                      label={t("countries.author_name")}
                       value={form.getFieldValue(['authors', field.name, 'name']) ?? { fa: '', en: '' }}
                       onChange={(v) => form.setFieldValue(['authors', field.name, 'name'], v)}
                       required
                     />
                     <BilingualInput
-                      label="بیوگرافی"
+                      label={t("countries.biography")}
                       value={form.getFieldValue(['authors', field.name, 'bio']) ?? { fa: '', en: '' }}
                       onChange={(v) => form.setFieldValue(['authors', field.name, 'bio'], v)}
                       textarea
@@ -213,44 +215,44 @@ export function CountryForm() {
                     <ImageUpload
                       value={form.getFieldValue(['authors', field.name, 'image']) ?? ''}
                       onChange={(v) => form.setFieldValue(['authors', field.name, 'image'], v)}
-                      label="تصویر"
+                      label={t("countries.image")}
                     />
                     <Button danger icon={<MinusCircleOutlined />} onClick={() => remove(field.name)}>
-                      حذف نویسنده
+                      {t("countries.delete_author")}
                     </Button>
                   </div>
                 ))}
                 <Button type="dashed" onClick={() => add({ name: { fa: '', en: '' }, bio: { fa: '', en: '' }, image: '' })} icon={<PlusOutlined />}>
-                  افزودن نویسنده
+                  {t("countries.add_author")}
                 </Button>
               </>
             )}
           </Form.List>
         </Card>
 
-        <Card title="اصلاحیه‌ها" style={{ marginBottom: 24 }}>
+        <Card title={t("countries.amendments")} style={{ marginBottom: 24 }}>
           <Form.List name="amendments">
             {(fields, { add, remove }) => (
               <>
                 {fields.map((field) => (
                   <div key={field.key} style={{ border: '1px solid #f0f0f0', padding: 16, marginBottom: 16, borderRadius: 8 }}>
-                    <Form.Item name={[field.name, 'year']} label="سال" rules={[{ required: true, message: 'سال الزامی است' }]}>
+                    <Form.Item name={[field.name, 'year']} label={t("countries.year")} rules={[{ required: true, message: t("countries.year_required") }]}>
                       <InputNumber min={1700} max={2100} style={{ width: 150 }} />
                     </Form.Item>
                     <BilingualInput
-                      label="توضیحات"
+                      label={t("countries.description")}
                       value={form.getFieldValue(['amendments', field.name, 'description']) ?? { fa: '', en: '' }}
                       onChange={(v) => form.setFieldValue(['amendments', field.name, 'description'], v)}
                       textarea
                       required
                     />
                     <Button danger icon={<MinusCircleOutlined />} onClick={() => remove(field.name)}>
-                      حذف اصلاحیه
+                      {t("countries.delete_amendment")}
                     </Button>
                   </div>
                 ))}
                 <Button type="dashed" onClick={() => add({ year: undefined, description: { fa: '', en: '' } })} icon={<PlusOutlined />}>
-                  افزودن اصلاحیه
+                  {t("countries.add_amendment")}
                 </Button>
               </>
             )}
@@ -261,9 +263,9 @@ export function CountryForm() {
 
         <Space>
           <Button type="primary" htmlType="submit" loading={submitting}>
-            {isEdit ? 'بروزرسانی' : 'ایجاد'}
+            {isEdit ? t("countries.update") : t("countries.create")}
           </Button>
-          <Button onClick={() => navigate(ROUTES.COUNTRIES)}>انصراف</Button>
+          <Button onClick={() => navigate(ROUTES.COUNTRIES)}>{t("countries.cancel")}</Button>
         </Space>
       </Form>
     </div>

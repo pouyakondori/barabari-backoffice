@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { TableProps } from "antd";
 import { Input, Space, Table } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
+import { useTranslation } from '@/locale';
 
 interface DataTablePagination {
   current: number;
@@ -26,13 +27,14 @@ export default function DataTable<T extends object>({
   columns,
   dataSource,
   loading = false,
-  searchPlaceholder = "Search...",
+  searchPlaceholder,
   onSearch,
   pagination,
   rowKey = "id",
   rowSelection,
   extra,
 }: DataTableProps<T>) {
+  const { t } = useTranslation();
   return (
     <div>
       <Space style={{ marginBottom: 16, width: "100%", justifyContent: "space-between" }}>
@@ -40,7 +42,7 @@ export default function DataTable<T extends object>({
           {onSearch && (
             <Input
               prefix={<SearchOutlined />}
-              placeholder={searchPlaceholder}
+              placeholder={searchPlaceholder ?? t("common.search")}
               onChange={(e) => onSearch(e.target.value)}
               allowClear
               style={{ width: 300 }}
@@ -61,7 +63,7 @@ export default function DataTable<T extends object>({
           total: pagination.total,
           onChange: pagination.onChange,
           showSizeChanger: true,
-          showTotal: (total) => `Total ${total} items`,
+          showTotal: (total) => t("common.total_items").replace("{total}", String(total)),
         }}
       />
     </div>

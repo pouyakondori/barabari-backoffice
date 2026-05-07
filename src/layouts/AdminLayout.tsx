@@ -20,6 +20,7 @@ import {
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { useAuth } from '@/auth/useAuth';
+import { useTranslation } from '@/locale';
 
 const { Header, Sider, Content } = Layout;
 
@@ -29,6 +30,7 @@ export function AdminLayout() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { token: themeToken } = theme.useToken();
+  const { t } = useTranslation();
 
   // TODO: add pendingComments to backend stats
   const pendingComments = 0;
@@ -36,36 +38,36 @@ export function AdminLayout() {
   const selectedKey = getSelectedKey(location.pathname);
 
   const menuItems: MenuProps['items'] = [
-    { key: '/', icon: <DashboardOutlined />, label: 'داشبورد' },
-    { key: '/users', icon: <UserOutlined />, label: 'کاربران' },
-    { key: '/countries', icon: <GlobalOutlined />, label: 'کشورها' },
-    { key: '/constitutions', icon: <BookOutlined />, label: 'قانون اساسی' },
-    { key: '/topics', icon: <TagsOutlined />, label: 'موضوعات' },
+    { key: '/', icon: <DashboardOutlined />, label: t("nav.dashboard") },
+    { key: '/users', icon: <UserOutlined />, label: t("nav.users") },
+    { key: '/countries', icon: <GlobalOutlined />, label: t("nav.countries") },
+    { key: '/constitutions', icon: <BookOutlined />, label: t("nav.constitutions") },
+    { key: '/topics', icon: <TagsOutlined />, label: t("nav.topics") },
     {
       key: '/comments',
       icon: <CommentOutlined />,
       label: (
         <span>
-          نظرات
+          {t("nav.comments")}
           {pendingComments > 0 && (
             <Badge count={pendingComments} size="small" style={{ marginRight: 8 }} />
           )}
         </span>
       ),
     },
-    { key: '/votes', icon: <BarChartOutlined />, label: 'آرا' },
-    { key: '/podcasts', icon: <SoundOutlined />, label: 'پادکست‌ها' },
-    { key: '/timeline', icon: <FieldTimeOutlined />, label: 'خط زمانی' },
-    { key: '/sandboxes', icon: <ExperimentOutlined />, label: 'سندباکس' },
+    { key: '/votes', icon: <BarChartOutlined />, label: t("nav.votes") },
+    { key: '/podcasts', icon: <SoundOutlined />, label: t("nav.podcasts") },
+    { key: '/timeline', icon: <FieldTimeOutlined />, label: t("nav.timeline") },
+    { key: '/sandboxes', icon: <ExperimentOutlined />, label: t("nav.sandboxes") },
     { type: 'divider' as const },
-    { key: '/settings', icon: <SettingOutlined />, label: 'تنظیمات' },
-    { key: '/audit', icon: <AuditOutlined />, label: 'لاگ تغییرات' },
+    { key: '/settings', icon: <SettingOutlined />, label: t("nav.settings") },
+    { key: '/audit', icon: <AuditOutlined />, label: t("nav.audit") },
   ];
 
   const userMenuItems: MenuProps['items'] = [
     { key: 'user-info', label: user?.displayName ?? user?.email, disabled: true },
     { type: 'divider' },
-    { key: 'logout', icon: <LogoutOutlined />, label: 'خروج', danger: true },
+    { key: 'logout', icon: <LogoutOutlined />, label: t("nav.logout"), danger: true },
   ];
 
   const onUserMenuClick: MenuProps['onClick'] = ({ key }) => {
@@ -87,7 +89,7 @@ export function AdminLayout() {
       >
         <div style={{ height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: `1px solid ${themeToken.colorBorderSecondary}` }}>
           <span style={{ fontWeight: 700, fontSize: collapsed ? 14 : 18 }}>
-            {collapsed ? 'B' : 'Barabari Admin'}
+            {collapsed ? 'B' : t("app.brand")}
           </span>
         </div>
         <Menu

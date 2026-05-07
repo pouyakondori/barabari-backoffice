@@ -8,6 +8,7 @@ import FileUpload from '@/components/common/FileUpload';
 import ImageUpload from '@/components/common/ImageUpload';
 import { ROUTES } from '@/utils/constants';
 import { localized } from '@/utils/formatters';
+import { useTranslation } from '@/locale';
 import { ADMIN_PODCAST } from '@/graphql/queries/podcasts';
 import { GET_COUNTRIES } from '@/graphql/queries/countries';
 import { GET_TOPICS } from '@/graphql/queries/topics';
@@ -37,6 +38,7 @@ const INITIAL_STATE: PodcastFormState = {
 };
 
 export default function PodcastForm() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEditing = !!id;
@@ -73,7 +75,7 @@ export default function PodcastForm() {
 
   const [createPodcast, { loading: creating }] = useMutation(ADMIN_CREATE_PODCAST, {
     onCompleted: () => {
-      message.success('Podcast created successfully');
+      message.success(t("podcasts.podcast_created"));
       navigate(ROUTES.PODCASTS);
     },
     onError: (err: any) => message.error(err.message),
@@ -81,7 +83,7 @@ export default function PodcastForm() {
 
   const [updatePodcast, { loading: updating }] = useMutation(ADMIN_UPDATE_PODCAST, {
     onCompleted: () => {
-      message.success('Podcast updated successfully');
+      message.success(t("podcasts.podcast_updated"));
       navigate(ROUTES.PODCASTS);
     },
     onError: (err: any) => message.error(err.message),
@@ -93,7 +95,7 @@ export default function PodcastForm() {
 
   const handleSubmit = () => {
     if (!form.title.fa) {
-      message.warning('Please enter a title (Farsi)');
+      message.warning(t("podcasts.title_required"));
       return;
     }
 
@@ -130,16 +132,16 @@ export default function PodcastForm() {
   }));
 
   return (
-    <Card title={isEditing ? 'Edit Podcast' : 'Create Podcast'} style={{ maxWidth: 800 }}>
+    <Card title={isEditing ? t("podcasts.edit_podcast") : t("podcasts.create_podcast")} style={{ maxWidth: 800 }}>
       <BilingualInput
-        label="Title"
+        label={t("podcasts.title_label")}
         value={form.title}
         onChange={(title) => setForm((s) => ({ ...s, title }))}
         required
       />
 
       <BilingualInput
-        label="Description"
+        label={t("podcasts.description")}
         value={form.description}
         onChange={(description) => setForm((s) => ({ ...s, description }))}
         textarea
@@ -148,21 +150,21 @@ export default function PodcastForm() {
       <FileUpload
         value={form.audioUrl}
         onChange={(audioUrl) => setForm((s) => ({ ...s, audioUrl }))}
-        label="Audio File"
+        label={t("podcasts.audio_file")}
         accept="audio/*"
       />
 
       <ImageUpload
         value={form.coverImage}
         onChange={(coverImage) => setForm((s) => ({ ...s, coverImage }))}
-        label="Cover Image"
+        label={t("podcasts.cover_image")}
       />
 
       <div style={{ marginBottom: 16 }}>
-        <span style={{ fontWeight: 600 }}>Country</span>
+        <span style={{ fontWeight: 600 }}>{t("podcasts.country")}</span>
         <div style={{ marginTop: 8 }}>
           <Select
-            placeholder="Select country"
+            placeholder={t("podcasts.select_country")}
             style={{ width: '100%' }}
             value={form.countryId}
             onChange={(countryId) => setForm((s) => ({ ...s, countryId }))}
@@ -173,10 +175,10 @@ export default function PodcastForm() {
       </div>
 
       <div style={{ marginBottom: 16 }}>
-        <span style={{ fontWeight: 600 }}>Topic</span>
+        <span style={{ fontWeight: 600 }}>{t("podcasts.topic")}</span>
         <div style={{ marginTop: 8 }}>
           <Select
-            placeholder="Select topic"
+            placeholder={t("podcasts.select_topic")}
             style={{ width: '100%' }}
             value={form.topicId}
             onChange={(topicId) => setForm((s) => ({ ...s, topicId }))}
@@ -187,20 +189,20 @@ export default function PodcastForm() {
       </div>
 
       <div style={{ marginBottom: 16 }}>
-        <span style={{ fontWeight: 600 }}>Duration (minutes)</span>
+        <span style={{ fontWeight: 600 }}>{t("podcasts.duration_minutes")}</span>
         <div style={{ marginTop: 8 }}>
           <InputNumber
             min={0}
             value={form.duration}
             onChange={(val) => setForm((s) => ({ ...s, duration: (val ?? 0) * 60 }))}
             style={{ width: '100%' }}
-            placeholder="Duration in minutes"
+            placeholder={t("podcasts.duration_placeholder")}
           />
         </div>
       </div>
 
       <div style={{ marginBottom: 24 }}>
-        <span style={{ fontWeight: 600 }}>Published Date</span>
+        <span style={{ fontWeight: 600 }}>{t("podcasts.published_date")}</span>
         <div style={{ marginTop: 8 }}>
           <DatePicker
             style={{ width: '100%' }}
@@ -214,9 +216,9 @@ export default function PodcastForm() {
 
       <Space>
         <Button type="primary" onClick={handleSubmit} loading={creating || updating}>
-          {isEditing ? 'Update' : 'Create'}
+          {isEditing ? t("podcasts.update") : t("podcasts.create")}
         </Button>
-        <Button onClick={() => navigate(ROUTES.PODCASTS)}>Cancel</Button>
+        <Button onClick={() => navigate(ROUTES.PODCASTS)}>{t("podcasts.cancel")}</Button>
       </Space>
     </Card>
   );

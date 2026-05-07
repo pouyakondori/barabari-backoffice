@@ -19,8 +19,10 @@ import { usePagination } from '@/hooks/usePagination';
 import { useDebounce } from '@/hooks/useDebounce';
 import { formatDate } from '@/utils/formatters';
 import { ROUTES } from '@/utils/constants';
+import { useTranslation } from '@/locale';
 
 export function UserList() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const pagination = usePagination();
   const [search, setSearch] = useState('');
@@ -52,14 +54,14 @@ export function UserList() {
     try {
       if (user.isBanned) {
         await unbanUser({ variables: { id: user.id } });
-        void message.success(`${user.displayName} رفع مسدودی شد`);
+        void message.success(`${user.displayName} ${t("users.unbanned")}`);
       } else {
         await banUser({ variables: { id: user.id } });
-        void message.success(`${user.displayName} مسدود شد`);
+        void message.success(`${user.displayName} ${t("users.was_banned")}`);
       }
       await refetch();
     } catch {
-      void message.error('خطا در انجام عملیات');
+      void message.error(t("users.operation_error"));
     }
   };
 
@@ -67,73 +69,73 @@ export function UserList() {
     if (!deleteTarget) return;
     try {
       await deleteUser({ variables: { id: deleteTarget.id } });
-      void message.success('کاربر حذف شد');
+      void message.success(t("users.user_deleted"));
       setDeleteTarget(null);
       await refetch();
     } catch {
-      void message.error('خطا در حذف کاربر');
+      void message.error(t("users.delete_error"));
     }
   };
 
   const handleBulkBan = async () => {
     try {
       await Promise.all(selectedIds.map((id) => banUser({ variables: { id } })));
-      void message.success(`${selectedIds.length} کاربر مسدود شدند`);
+      void message.success(`${selectedIds.length} ${t("users.bulk_banned")}`);
       setSelectedIds([]);
       await refetch();
     } catch {
-      void message.error('خطا در مسدودسازی گروهی');
+      void message.error(t("users.bulk_ban_error"));
     }
   };
 
   const handleBulkDelete = async () => {
     try {
       await Promise.all(selectedIds.map((id) => deleteUser({ variables: { id } })));
-      void message.success(`${selectedIds.length} کاربر حذف شدند`);
+      void message.success(`${selectedIds.length} ${t("users.bulk_deleted")}`);
       setSelectedIds([]);
       await refetch();
     } catch {
-      void message.error('خطا در حذف گروهی');
+      void message.error(t("users.bulk_delete_error"));
     }
   };
 
   const columns: ColumnsType<User> = useMemo(() => [
     {
-      title: 'نام نمایشی',
+      title: t("users.display_name"),
       dataIndex: 'displayName',
       key: 'displayName',
     },
     {
-      title: 'ایمیل',
+      title: t("users.email"),
       dataIndex: 'email',
       key: 'email',
     },
     {
-      title: 'نقش',
+      title: t("users.role"),
       dataIndex: 'role',
       key: 'role',
       render: (role: string) => <StatusBadge status={role} />,
     },
     {
-      title: 'تایید شده',
+      title: t("users.verified"),
       dataIndex: 'isVerified',
       key: 'isVerified',
-      render: (v: boolean) => (v ? <Tag color="green">بله</Tag> : <Tag color="orange">خیر</Tag>),
+      render: (v: boolean) => (v ? <Tag color="green">{t("users.yes")}</Tag> : <Tag color="orange">{t("users.no")}</Tag>),
     },
     {
-      title: 'مسدود',
+      title: t("users.banned"),
       dataIndex: 'isBanned',
       key: 'isBanned',
-      render: (v: boolean) => (v ? <Tag color="red">مسدود</Tag> : <Tag color="green">فعال</Tag>),
+      render: (v: boolean) => (v ? <Tag color="red">{t("users.banned")}</Tag> : <Tag color="green">{t("users.active")}</Tag>),
     },
     {
-      title: 'تاریخ عضویت',
+      title: t("users.join_date"),
       dataIndex: 'createdAt',
       key: 'createdAt',
       render: (d: string) => formatDate(d),
     },
     {
-      title: 'عملیات',
+      title: t("users.actions"),
       key: 'actions',
       render: (_: unknown, record: User) => (
         <Space>
@@ -169,9 +171,9 @@ export function UserList() {
         onChange={setRoleFilter}
         style={{ width: 120 }}
         options={[
-          { value: 'all', label: 'همه نقش‌ها' },
-          { value: 'user', label: 'کاربر' },
-          { value: 'admin', label: 'ادمین' },
+          { value: 'all', label: t("users.all_roles") },
+          { value: 'user', label: t("users.user") },
+          { value: 'admin', label: t("users.admin") },
         ]}
       />
       <Select
@@ -179,9 +181,9 @@ export function UserList() {
         onChange={setStatusFilter}
         style={{ width: 120 }}
         options={[
-          { value: 'all', label: 'همه وضعیت‌ها' },
-          { value: 'active', label: 'فعال' },
-          { value: 'banned', label: 'مسدود' },
+          { value: 'all', label: t("users.all_statuses") },
+          { value: 'active', label: t("users.active") },
+          { value: 'banned', label: t("users.banned") },
         ]}
       />
     </Space>
@@ -189,12 +191,12 @@ export function UserList() {
 
   const bulkBar = selectedIds.length > 0 ? (
     <Space style={{ marginBottom: 16 }}>
-      <span>{selectedIds.length} مورد انتخاب شده</span>
+      <span>{selectedIds.length} {t("users.items_selected")}</span>
       <Button size="small" danger icon={<StopOutlined />} onClick={() => void handleBulkBan()}>
-        مسدودسازی گروهی
+        {t("users.bulk_ban")}
       </Button>
       <Button size="small" danger icon={<DeleteOutlined />} onClick={() => void handleBulkDelete()}>
-        حذف گروهی
+        {t("users.bulk_delete")}
       </Button>
     </Space>
   ) : null;
@@ -206,7 +208,7 @@ export function UserList() {
         columns={columns}
         dataSource={users}
         loading={loading}
-        searchPlaceholder="جستجو بر اساس نام یا ایمیل..."
+        searchPlaceholder={t("users.search_placeholder")}
         onSearch={setSearch}
         pagination={{
           current: pagination.page,
@@ -222,8 +224,8 @@ export function UserList() {
       />
       <ConfirmModal
         open={!!deleteTarget}
-        title="حذف کاربر"
-        content={`آیا از حذف کاربر «${deleteTarget?.displayName ?? ''}» مطمئن هستید؟`}
+        title={t("users.delete_user")}
+        content={`${t("users.delete_confirm_prefix")}${deleteTarget?.displayName ?? ''}${t("users.delete_confirm_suffix")}`}
         onConfirm={() => void handleDelete()}
         onCancel={() => setDeleteTarget(null)}
         loading={deleteLoading}

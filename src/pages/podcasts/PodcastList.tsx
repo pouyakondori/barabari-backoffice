@@ -10,6 +10,7 @@ import { usePagination } from '@/hooks/usePagination';
 import { useDebounce } from '@/hooks/useDebounce';
 import { localized, formatDate } from '@/utils/formatters';
 import { ROUTES } from '@/utils/constants';
+import { useTranslation } from '@/locale';
 import { ADMIN_PODCASTS } from '@/graphql/queries/podcasts';
 import { GET_TOPICS } from '@/graphql/queries/topics';
 import { GET_COUNTRIES } from '@/graphql/queries/countries';
@@ -17,6 +18,7 @@ import { ADMIN_DELETE_PODCAST } from '@/graphql/mutations/podcasts';
 import type { Podcast, PaginatedResult, Country, Topic } from '@/types';
 
 export default function PodcastList() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const pagination = usePagination();
   const [search, setSearch] = useState('');
@@ -46,7 +48,7 @@ export default function PodcastList() {
   const [deletePodcast, { loading: deleting }] = useMutation(ADMIN_DELETE_PODCAST, {
     refetchQueries: [{ query: ADMIN_PODCASTS }],
     onCompleted: () => {
-      message.success('Podcast deleted successfully');
+      message.success(t("podcasts.podcast_deleted"));
       setDeleteTarget(null);
     },
     onError: (err: any) => message.error(err.message),
@@ -60,32 +62,32 @@ export default function PodcastList() {
 
   const columns: ColumnsType<Podcast> = [
     {
-      title: 'Title',
+      title: t("podcasts.title"),
       dataIndex: 'title',
       render: (_: unknown, record: Podcast) => localized(record.title),
     },
     {
-      title: 'Country',
+      title: t("podcasts.country"),
       dataIndex: ['country', 'name'],
       width: 120,
       render: (_: unknown, record: Podcast) =>
         record.country ? localized(record.country.name) : '—',
     },
     {
-      title: 'Topic',
+      title: t("podcasts.topic"),
       dataIndex: ['topic', 'name'],
       width: 140,
       render: (_: unknown, record: Podcast) =>
         record.topic ? localized(record.topic.name) : '—',
     },
     {
-      title: 'Duration',
+      title: t("podcasts.duration"),
       dataIndex: 'duration',
       width: 90,
       render: (val: number) => formatDuration(val),
     },
     {
-      title: 'Published',
+      title: t("podcasts.published"),
       dataIndex: 'publishedAt',
       width: 120,
       render: (date: string) => formatDate(date),
@@ -93,7 +95,7 @@ export default function PodcastList() {
         new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime(),
     },
     {
-      title: 'Actions',
+      title: t("podcasts.actions"),
       width: 120,
       render: (_: unknown, record: Podcast) => (
         <Space>
@@ -132,7 +134,7 @@ export default function PodcastList() {
         columns={columns}
         dataSource={podcasts}
         loading={loading}
-        searchPlaceholder="Search podcasts..."
+        searchPlaceholder={t("podcasts.search_placeholder")}
         onSearch={setSearch}
         pagination={{
           current: pagination.page,
@@ -143,7 +145,7 @@ export default function PodcastList() {
         extra={
           <Space>
             <Select
-              placeholder="Filter by country"
+              placeholder={t("podcasts.filter_country")}
               allowClear
               style={{ width: 160 }}
               value={countryFilter}
@@ -154,7 +156,7 @@ export default function PodcastList() {
               options={countryOptions}
             />
             <Select
-              placeholder="Filter by topic"
+              placeholder={t("podcasts.filter_topic")}
               allowClear
               style={{ width: 160 }}
               value={topicFilter}
@@ -169,7 +171,7 @@ export default function PodcastList() {
               icon={<PlusOutlined />}
               onClick={() => navigate(ROUTES.PODCAST_CREATE)}
             >
-              Add Podcast
+              {t("podcasts.add_podcast")}
             </Button>
           </Space>
         }
@@ -177,8 +179,8 @@ export default function PodcastList() {
 
       <ConfirmModal
         open={!!deleteTarget}
-        title="Delete Podcast"
-        content={`Are you sure you want to delete "${deleteTarget ? localized(deleteTarget.title) : ''}"?`}
+        title={t("podcasts.delete_podcast")}
+        content={`${t("podcasts.confirm_delete")} "${deleteTarget ? localized(deleteTarget.title) : ''}"?`}
         onConfirm={() => {
           if (deleteTarget) {
             deletePodcast({ variables: { id: deleteTarget.id } });

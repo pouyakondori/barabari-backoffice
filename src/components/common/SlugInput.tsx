@@ -1,4 +1,5 @@
 import { Button, Input, Space, Typography } from "antd";
+import { useTranslation } from '@/locale';
 
 const { Text } = Typography;
 
@@ -23,8 +24,9 @@ export default function SlugInput({
   value,
   onChange,
   sourceValue,
-  label = "Slug",
+  label,
 }: SlugInputProps) {
+  const { t } = useTranslation();
   const handleGenerate = () => {
     if (sourceValue) {
       onChange(toSlug(sourceValue));
@@ -33,7 +35,7 @@ export default function SlugInput({
 
   return (
     <div style={{ marginBottom: 16 }}>
-      <Text strong>{label}</Text>
+      <Text strong>{label ?? t("slug.label")}</Text>
       <Space.Compact style={{ width: "100%", marginTop: 8 }}>
         <Input
           value={value}
@@ -41,7 +43,7 @@ export default function SlugInput({
           placeholder="url-safe-slug"
         />
         <Button onClick={handleGenerate} disabled={!sourceValue}>
-          Generate
+          {t("common.generate")}
         </Button>
       </Space.Compact>
     </div>

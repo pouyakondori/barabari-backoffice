@@ -31,6 +31,7 @@ import BilingualInput from '@/components/common/BilingualInput';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import { localized } from '@/utils/formatters';
 import { ROUTES } from '@/utils/constants';
+import { useTranslation } from '@/locale';
 
 const { Title, Text } = Typography;
 
@@ -54,6 +55,7 @@ interface ClauseFormValues {
 export function ConstitutionDetail() {
   const { countrySlug } = useParams<{ countrySlug: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [modalType, setModalType] = useState<ModalType>(null);
   const [editingChapter, setEditingChapter] = useState<Chapter | null>(null);
@@ -99,15 +101,15 @@ export function ConstitutionDetail() {
       const values = await chapterForm.validateFields();
       if (editingChapter) {
         await updateChapter({ variables: { id: editingChapter.id, input: values } });
-        void message.success('فصل بروزرسانی شد');
+        void message.success(t("constitutions.chapter_updated"));
       } else {
         await createChapter({ variables: { constitutionId: constitution?.id, input: values } });
-        void message.success('فصل ایجاد شد');
+        void message.success(t("constitutions.chapter_created"));
       }
       closeModal();
       await refetch();
     } catch {
-      void message.error('خطا در ذخیره فصل');
+      void message.error(t("constitutions.chapter_save_error"));
     }
   }, [chapterForm, editingChapter, constitution, createChapter, updateChapter, closeModal, refetch]);
 
@@ -116,15 +118,15 @@ export function ConstitutionDetail() {
       const values = await articleForm.validateFields();
       if (editingArticle) {
         await updateArticle({ variables: { id: editingArticle.id, input: values } });
-        void message.success('اصل بروزرسانی شد');
+        void message.success(t("constitutions.article_updated"));
       } else {
         await createArticle({ variables: { chapterId: parentId, input: values } });
-        void message.success('اصل ایجاد شد');
+        void message.success(t("constitutions.article_created"));
       }
       closeModal();
       await refetch();
     } catch {
-      void message.error('خطا در ذخیره اصل');
+      void message.error(t("constitutions.article_save_error"));
     }
   }, [articleForm, editingArticle, parentId, createArticle, updateArticle, closeModal, refetch]);
 
@@ -133,15 +135,15 @@ export function ConstitutionDetail() {
       const values = await clauseForm.validateFields();
       if (editingClause) {
         await updateClause({ variables: { id: editingClause.id, input: values } });
-        void message.success('بند بروزرسانی شد');
+        void message.success(t("constitutions.clause_updated"));
       } else {
         await createClause({ variables: { articleId: parentId, input: values } });
-        void message.success('بند ایجاد شد');
+        void message.success(t("constitutions.clause_created"));
       }
       closeModal();
       await refetch();
     } catch {
-      void message.error('خطا در ذخیره بند');
+      void message.error(t("constitutions.clause_save_error"));
     }
   }, [clauseForm, editingClause, parentId, createClause, updateClause, closeModal, refetch]);
 
@@ -152,17 +154,17 @@ export function ConstitutionDetail() {
       if (type === 'chapter') await deleteChapter({ variables: { id } });
       else if (type === 'article') await deleteArticle({ variables: { id } });
       else if (type === 'clause') await deleteClause({ variables: { id } });
-      void message.success('حذف شد');
+      void message.success(t("constitutions.deleted"));
       setDeleteTarget(null);
       await refetch();
     } catch {
-      void message.error('خطا در حذف');
+      void message.error(t("constitutions.delete_error"));
     }
   }, [deleteTarget, deleteChapter, deleteArticle, deleteClause, refetch]);
 
   if (loading) return <Spin size="large" style={{ display: 'block', margin: '100px auto' }} />;
-  if (error) return <Result status="error" title="خطا در بارگذاری" subTitle={error.message} />;
-  if (!constitution) return <Result status="404" title="قانون اساسی یافت نشد" />;
+  if (error) return <Result status="error" title={t("constitutions.loading_error")} subTitle={error.message} />;
+  if (!constitution) return <Result status="404" title={t("constitutions.not_found")} />;
 
   return (
     <div>
@@ -172,7 +174,7 @@ export function ConstitutionDetail() {
         onClick={() => navigate(ROUTES.CONSTITUTIONS)}
         style={{ marginBottom: 16, padding: 0 }}
       >
-        بازگشت به لیست قوانین اساسی
+        {t("constitutions.back_to_list")}
       </Button>
 
       <Card>
@@ -180,7 +182,7 @@ export function ConstitutionDetail() {
         {constitution.pdfUrl && (
           <Text>
             <a href={constitution.pdfUrl} target="_blank" rel="noopener noreferrer">
-              دانلود PDF
+              {t("constitutions.download_pdf")}
             </a>
           </Text>
         )}
@@ -227,18 +229,18 @@ export function ConstitutionDetail() {
       {/* Chapter Modal */}
       <Modal
         open={modalType === 'chapter'}
-        title={editingChapter ? 'ویرایش فصل' : 'افزودن فصل'}
+        title={editingChapter ? t("constitutions.edit_chapter") : t("constitutions.add_chapter")}
         onOk={() => void handleChapterSubmit()}
         onCancel={closeModal}
-        okText="ذخیره"
-        cancelText="انصراف"
+        okText={t("constitutions.save")}
+        cancelText={t("constitutions.cancel")}
       >
         <Form form={chapterForm} layout="vertical">
-          <Form.Item name="number" label="شماره فصل" rules={[{ required: true, message: 'شماره الزامی است' }]}>
+          <Form.Item name="number" label={t("constitutions.chapter_number")} rules={[{ required: true, message: t("constitutions.number_required") }]}>
             <InputNumber min={1} style={{ width: '100%' }} />
           </Form.Item>
           <BilingualInput
-            label="عنوان فصل"
+            label={t("constitutions.chapter_title")}
             value={chapterForm.getFieldValue('title') ?? { fa: '', en: '' }}
             onChange={(v) => chapterForm.setFieldValue('title', v)}
             required
@@ -249,18 +251,18 @@ export function ConstitutionDetail() {
       {/* Article Modal */}
       <Modal
         open={modalType === 'article'}
-        title={editingArticle ? 'ویرایش اصل' : 'افزودن اصل'}
+        title={editingArticle ? t("constitutions.edit_article") : t("constitutions.add_article")}
         onOk={() => void handleArticleSubmit()}
         onCancel={closeModal}
-        okText="ذخیره"
-        cancelText="انصراف"
+        okText={t("constitutions.save")}
+        cancelText={t("constitutions.cancel")}
       >
         <Form form={articleForm} layout="vertical">
-          <Form.Item name="number" label="شماره اصل" rules={[{ required: true, message: 'شماره الزامی است' }]}>
+          <Form.Item name="number" label={t("constitutions.article_number")} rules={[{ required: true, message: t("constitutions.number_required") }]}>
             <InputNumber min={1} style={{ width: '100%' }} />
           </Form.Item>
           <BilingualInput
-            label="عنوان اصل"
+            label={t("constitutions.article_title")}
             value={articleForm.getFieldValue('title') ?? { fa: '', en: '' }}
             onChange={(v) => articleForm.setFieldValue('title', v)}
             required
@@ -271,19 +273,19 @@ export function ConstitutionDetail() {
       {/* Clause Modal */}
       <Modal
         open={modalType === 'clause'}
-        title={editingClause ? 'ویرایش بند' : 'افزودن بند'}
+        title={editingClause ? t("constitutions.edit_clause") : t("constitutions.add_clause")}
         onOk={() => void handleClauseSubmit()}
         onCancel={closeModal}
-        okText="ذخیره"
-        cancelText="انصراف"
+        okText={t("constitutions.save")}
+        cancelText={t("constitutions.cancel")}
         width={700}
       >
         <Form form={clauseForm} layout="vertical">
-          <Form.Item name="number" label="شماره بند" rules={[{ required: true, message: 'شماره الزامی است' }]}>
+          <Form.Item name="number" label={t("constitutions.clause_number")} rules={[{ required: true, message: t("constitutions.number_required") }]}>
             <InputNumber min={1} style={{ width: '100%' }} />
           </Form.Item>
           <BilingualInput
-            label="متن بند"
+            label={t("constitutions.clause_text")}
             value={clauseForm.getFieldValue('text') ?? { fa: '', en: '' }}
             onChange={(v) => clauseForm.setFieldValue('text', v)}
             textarea
@@ -295,8 +297,8 @@ export function ConstitutionDetail() {
       {/* Delete Confirmation */}
       <ConfirmModal
         open={!!deleteTarget}
-        title="تایید حذف"
-        content="آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است."
+        title={t("constitutions.confirm_delete")}
+        content={t("constitutions.confirm_delete_message")}
         onConfirm={() => void handleDelete()}
         onCancel={() => setDeleteTarget(null)}
         danger

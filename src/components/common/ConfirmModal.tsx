@@ -1,4 +1,5 @@
 import { Modal } from "antd";
+import { useTranslation } from '@/locale';
 
 interface ConfirmModalProps {
   open: boolean;
@@ -19,6 +20,7 @@ export default function ConfirmModal({
   loading = false,
   danger = false,
 }: ConfirmModalProps) {
+  const { t } = useTranslation();
   return (
     <Modal
       open={open}
@@ -27,8 +29,8 @@ export default function ConfirmModal({
       onCancel={onCancel}
       confirmLoading={loading}
       okButtonProps={{ danger }}
-      okText={danger ? "Delete" : "Confirm"}
-      cancelText="Cancel"
+      okText={danger ? t("common.delete") : t("common.confirm")}
+      cancelText={t("common.cancel")}
     >
       <p>{content}</p>
     </Modal>

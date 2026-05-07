@@ -1,4 +1,5 @@
 import { Card, Skeleton } from "antd";
+import { useTranslation } from '@/locale';
 import {
   Bar,
   BarChart,
@@ -21,8 +22,9 @@ interface VoteChartProps {
 }
 
 export default function VoteChart({ data, loading = false }: VoteChartProps) {
+  const { t } = useTranslation();
   return (
-    <Card title="Vote Activity">
+    <Card title={t("charts.vote_activity")}>
       {loading ? (
         <Skeleton active paragraph={{ rows: 6 }} />
       ) : (
@@ -32,8 +34,8 @@ export default function VoteChart({ data, loading = false }: VoteChartProps) {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="agree" fill="#52c41a" name="Agree" />
-            <Bar dataKey="disagree" fill="#ff4d4f" name="Disagree" />
+            <Bar dataKey="agree" fill="#52c41a" name={t("votes.agree")} />
+            <Bar dataKey="disagree" fill="#ff4d4f" name={t("votes.disagree")} />
           </BarChart>
         </ResponsiveContainer>
       )}

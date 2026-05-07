@@ -7,6 +7,7 @@ import {
 import type { DataNode } from "antd/es/tree";
 import type { Article, Chapter, Clause, Constitution } from "@/types";
 import { localized } from "@/utils/formatters";
+import { useTranslation } from '@/locale';
 
 interface ChapterTreeProps {
   constitution: Constitution | null;
@@ -65,6 +66,7 @@ export default function ChapterTree({
   onDeleteArticle,
   onDeleteClause,
 }: ChapterTreeProps) {
+  const { t } = useTranslation();
   if (!constitution) return null;
 
   const treeData: DataNode[] = constitution.chapters
@@ -75,7 +77,7 @@ export default function ChapterTree({
       title: (
         <Space>
           <span>
-            فصل {chapter.number}: {localized(chapter.title)}
+            {t("constitutions.chapter_prefix")} {chapter.number}: {localized(chapter.title)}
           </span>
           {buildActionButtons(
             () => onEditChapter(chapter),
@@ -92,7 +94,7 @@ export default function ChapterTree({
           title: (
             <Space>
               <span>
-                اصل {article.number}: {localized(article.title)}
+                {t("constitutions.article_prefix")} {article.number}: {localized(article.title)}
               </span>
               {buildActionButtons(
                 () => onEditArticle(article),
@@ -109,7 +111,7 @@ export default function ChapterTree({
               title: (
                 <Space>
                   <span>
-                    بند {clause.number}: {localized(clause.text).slice(0, 50)}
+                    {t("constitutions.clause_prefix")} {clause.number}: {localized(clause.text).slice(0, 50)}
                     {localized(clause.text).length > 50 ? "..." : ""}
                   </span>
                   {buildActionButtons(
@@ -126,7 +128,7 @@ export default function ChapterTree({
     <div>
       <div style={{ marginBottom: 16 }}>
         <Button type="primary" icon={<PlusOutlined />} onClick={onAddChapter}>
-          Add Chapter
+          {t("constitutions.add_chapter")}
         </Button>
       </div>
       <Tree treeData={treeData} defaultExpandAll showLine />

@@ -1,14 +1,15 @@
 import { Tag } from "antd";
+import { useTranslation } from '@/locale';
 
-const STATUS_CONFIG: Record<string, { color: string; label: string }> = {
-  approved: { color: "green", label: "Approved" },
-  active: { color: "green", label: "Active" },
-  pending: { color: "orange", label: "Pending" },
-  rejected: { color: "red", label: "Rejected" },
-  deleted: { color: "default", label: "Deleted" },
-  banned: { color: "red", label: "Banned" },
-  admin: { color: "blue", label: "Admin" },
-  user: { color: "default", label: "User" },
+const STATUS_COLORS: Record<string, string> = {
+  approved: "green",
+  active: "green",
+  pending: "orange",
+  rejected: "red",
+  deleted: "default",
+  banned: "red",
+  admin: "blue",
+  user: "default",
 };
 
 interface StatusBadgeProps {
@@ -16,10 +17,10 @@ interface StatusBadgeProps {
 }
 
 export default function StatusBadge({ status }: StatusBadgeProps) {
-  const config = STATUS_CONFIG[status.toLowerCase()] ?? {
-    color: "default",
-    label: status,
-  };
+  const { t } = useTranslation();
+  const normalizedStatus = status.toLowerCase();
+  const color = STATUS_COLORS[normalizedStatus] ?? "default";
+  const label = t(`status.${normalizedStatus}`);
 
-  return <Tag color={config.color}>{config.label}</Tag>;
+  return <Tag color={color}>{label}</Tag>;
 }

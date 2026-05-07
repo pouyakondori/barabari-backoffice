@@ -29,6 +29,7 @@ import { ADMIN_BAN_USER, ADMIN_UNBAN_USER, ADMIN_DELETE_USER, ADMIN_UPDATE_USER 
 import ConfirmModal from '@/components/common/ConfirmModal';
 import { formatDate } from '@/utils/formatters';
 import { ROUTES } from '@/utils/constants';
+import { useTranslation } from '@/locale';
 
 const { Title, Text } = Typography;
 
@@ -41,6 +42,7 @@ const activityItems = [
 export function UserDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [deleteOpen, setDeleteOpen] = useState(false);
 
@@ -57,48 +59,48 @@ export function UserDetail() {
   const user = data?.adminUser;
 
   if (loading) return <Spin size="large" style={{ display: 'block', margin: '100px auto' }} />;
-  if (error) return <Result status="error" title="خطا در بارگذاری کاربر" subTitle={error.message} />;
-  if (!user) return <Result status="404" title="کاربر یافت نشد" />;
+  if (error) return <Result status="error" title={t("users.loading_error")} subTitle={error.message} />;
+  if (!user) return <Result status="404" title={t("users.not_found")} />;
 
   const handleToggleBan = async () => {
     try {
       if (user.isBanned) {
         await unbanUser({ variables: { id: user.id } });
-        void message.success('رفع مسدودی شد');
+        void message.success(t("users.unbanned"));
       } else {
         await banUser({ variables: { id: user.id } });
-        void message.success('کاربر مسدود شد');
+        void message.success(t("users.was_banned"));
       }
       await refetch();
     } catch {
-      void message.error('خطا در انجام عملیات');
+      void message.error(t("users.operation_error"));
     }
   };
 
   const handleRoleChange = async (role: string) => {
     try {
       await updateUser({ variables: { id: user.id, input: { role } } });
-      void message.success('نقش کاربر تغییر کرد');
+      void message.success(t("users.role_changed"));
       await refetch();
     } catch {
-      void message.error('خطا در تغییر نقش');
+      void message.error(t("users.role_change_error"));
     }
   };
 
   const handleDelete = async () => {
     try {
       await deleteUser({ variables: { id: user.id } });
-      void message.success('کاربر حذف شد');
+      void message.success(t("users.user_deleted"));
       navigate(ROUTES.USERS);
     } catch {
-      void message.error('خطا در حذف کاربر');
+      void message.error(t("users.delete_error"));
     }
   };
 
   const tabItems = [
     {
       key: 'activity',
-      label: 'فعالیت‌ها',
+      label: t("users.activities"),
       children: (
         <List
           dataSource={activityItems}
@@ -112,18 +114,18 @@ export function UserDetail() {
     },
     {
       key: 'actions',
-      label: 'عملیات',
+      label: t("users.actions"),
       children: (
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <div>
-            <Text strong style={{ display: 'block', marginBottom: 8 }}>تغییر نقش</Text>
+            <Text strong style={{ display: 'block', marginBottom: 8 }}>{t("users.change_role")}</Text>
             <Select
               value={user.role}
               onChange={(v) => void handleRoleChange(v)}
               style={{ width: 200 }}
               options={[
-                { value: 'user', label: 'کاربر' },
-                { value: 'admin', label: 'ادمین' },
+                { value: 'user', label: t("users.user") },
+                { value: 'admin', label: t("users.admin") },
               ]}
             />
           </div>
@@ -133,10 +135,10 @@ export function UserDetail() {
               danger={!user.isBanned}
               onClick={() => void handleToggleBan()}
             >
-              {user.isBanned ? 'رفع مسدودی' : 'مسدود کردن'}
+              {user.isBanned ? t("users.unban") : t("users.ban")}
             </Button>
             <Button danger icon={<DeleteOutlined />} onClick={() => setDeleteOpen(true)}>
-              حذف کاربر
+              {t("users.delete_user")}
             </Button>
           </Space>
         </Space>
@@ -152,7 +154,7 @@ export function UserDetail() {
         onClick={() => navigate(ROUTES.USERS)}
         style={{ marginBottom: 16, padding: 0 }}
       >
-        بازگشت به لیست کاربران
+        {t("users.back_to_list")}
       </Button>
 
       <Card>
@@ -169,16 +171,16 @@ export function UserDetail() {
           column={{ xs: 1, sm: 2 }}
           style={{ marginTop: 24 }}
         >
-          <Descriptions.Item label="نقش">
+          <Descriptions.Item label={t("users.role")}>
             <Tag color={user.role === 'admin' ? 'blue' : 'default'}>{user.role}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="وضعیت تایید">
-            {user.isVerified ? <Tag color="green">تایید شده</Tag> : <Tag color="orange">تایید نشده</Tag>}
+          <Descriptions.Item label={t("users.verification_status")}>
+            {user.isVerified ? <Tag color="green">{t("users.verified")}</Tag> : <Tag color="orange">{t("users.not_verified")}</Tag>}
           </Descriptions.Item>
-          <Descriptions.Item label="وضعیت">
-            {user.isBanned ? <Tag color="red">مسدود</Tag> : <Tag color="green">فعال</Tag>}
+          <Descriptions.Item label={t("users.status")}>
+            {user.isBanned ? <Tag color="red">{t("users.banned")}</Tag> : <Tag color="green">{t("users.active")}</Tag>}
           </Descriptions.Item>
-          <Descriptions.Item label="تاریخ عضویت">
+          <Descriptions.Item label={t("users.join_date")}>
             {formatDate(user.createdAt)}
           </Descriptions.Item>
         </Descriptions>
@@ -188,8 +190,8 @@ export function UserDetail() {
 
       <ConfirmModal
         open={deleteOpen}
-        title="حذف کاربر"
-        content={`آیا از حذف کاربر «${user.displayName}» مطمئن هستید؟ این عمل غیرقابل بازگشت است.`}
+        title={t("users.delete_user")}
+        content={`${t("users.delete_confirm_prefix")}${user.displayName}${t("users.delete_confirm_suffix")}`}
         onConfirm={() => void handleDelete()}
         onCancel={() => setDeleteOpen(false)}
         loading={deleteLoading}

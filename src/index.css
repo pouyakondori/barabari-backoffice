@@ -1,6 +1,9 @@
+*, *::before, *::after {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
 body {
   margin: 0;
-  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   direction: rtl;
 }
 
@@ -11,4 +14,11 @@ body {
 /* Override Ant Design for RTL */
 .ant-layout-sider {
   direction: rtl;
+}
+
+/* Ensure Ant Design inputs/buttons use Vazirmatn */
+.ant-btn, .ant-input, .ant-select, .ant-table,
+.ant-modal, .ant-form, .ant-card, .ant-menu,
+.ant-tabs, .ant-tag, .ant-badge, .ant-tooltip {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 }

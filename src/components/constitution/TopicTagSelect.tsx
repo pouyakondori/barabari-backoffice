@@ -1,6 +1,7 @@
 import { Select, Typography } from "antd";
 import type { Topic } from "@/types";
 import { localized } from "@/utils/formatters";
+import { useTranslation } from '@/locale';
 
 const { Text } = Typography;
 
@@ -15,6 +16,7 @@ export default function TopicTagSelect({
   value,
   onChange,
 }: TopicTagSelectProps) {
+  const { t } = useTranslation();
   const options = topics.map((topic) => ({
     label: localized(topic.name),
     value: topic.id,
@@ -22,11 +24,11 @@ export default function TopicTagSelect({
 
   return (
     <div>
-      <Text strong>Topics</Text>
+      <Text strong>{t("topics.topics_label")}</Text>
       <Select
         mode="multiple"
         style={{ width: "100%", marginTop: 8 }}
-        placeholder="Select topics..."
+        placeholder={t("topics.select_topics")}
         value={value}
         onChange={onChange}
         options={options}

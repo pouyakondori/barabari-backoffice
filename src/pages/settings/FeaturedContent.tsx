@@ -7,6 +7,7 @@ import {
   DeleteOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from '@/locale';
 import { localized } from '@/utils/formatters';
 import { GET_FEATURED_CONTENT } from '@/graphql/queries/settings';
 import { GET_COUNTRIES } from '@/graphql/queries/countries';
@@ -23,6 +24,7 @@ interface FeaturedItem {
 }
 
 export default function FeaturedContent() {
+  const { t } = useTranslation();
   const [featuredCountries, setFeaturedCountries] = useState<FeaturedItem[]>([]);
   const [featuredTopics, setFeaturedTopics] = useState<FeaturedItem[]>([]);
   const [addCountryId, setAddCountryId] = useState<string | undefined>();
@@ -50,7 +52,7 @@ export default function FeaturedContent() {
   const [setFeaturedCountriesMut, { loading: savingCountries }] = useMutation(
     ADMIN_SET_FEATURED_COUNTRIES,
     {
-      onCompleted: () => message.success('Featured countries saved'),
+      onCompleted: () => message.success(t("settings.featured_countries_saved")),
       onError: (err: any) => message.error(err.message),
     },
   );
@@ -58,7 +60,7 @@ export default function FeaturedContent() {
   const [setFeaturedTopicsMut, { loading: savingTopics }] = useMutation(
     ADMIN_SET_FEATURED_TOPICS,
     {
-      onCompleted: () => message.success('Featured topics saved'),
+      onCompleted: () => message.success(t("settings.featured_topics_saved")),
       onError: (err: any) => message.error(err.message),
     },
   );
@@ -78,7 +80,7 @@ export default function FeaturedContent() {
     const country = countriesData?.countries.items.find((c: any) => c.id === addCountryId);
     if (!country) return;
     if (featuredCountries.some((fc) => fc.id === addCountryId)) {
-      message.warning('Country already in featured list');
+      message.warning(t("settings.country_already_featured"));
       return;
     }
     setFeaturedCountries((prev) => [...prev, { id: country.id, name: country.name }]);
@@ -90,7 +92,7 @@ export default function FeaturedContent() {
     const topic = topicsData?.topics.items.find((t: any) => t.id === addTopicId);
     if (!topic) return;
     if (featuredTopics.some((ft) => ft.id === addTopicId)) {
-      message.warning('Topic already in featured list');
+      message.warning(t("settings.topic_already_featured"));
       return;
     }
     setFeaturedTopics((prev) => [...prev, { id: topic.id, name: topic.name }]);
@@ -118,10 +120,10 @@ export default function FeaturedContent() {
 
   return (
     <div style={{ maxWidth: 700 }}>
-      <Card title="Featured Countries" style={{ marginBottom: 24 }}>
+      <Card title={t("settings.featured_countries")} style={{ marginBottom: 24 }}>
         <Space style={{ marginBottom: 16 }}>
           <Select
-            placeholder="Select country to add"
+            placeholder={t("settings.select_country_to_add")}
             style={{ width: 250 }}
             value={addCountryId}
             onChange={setAddCountryId}
@@ -129,14 +131,14 @@ export default function FeaturedContent() {
             allowClear
           />
           <Button icon={<PlusOutlined />} onClick={handleAddCountry} disabled={!addCountryId}>
-            Add
+            {t("settings.add")}
           </Button>
         </Space>
 
         <List
           bordered
           dataSource={featuredCountries}
-          locale={{ emptyText: 'No featured countries' }}
+          locale={{ emptyText: t("settings.no_featured_countries") }}
           renderItem={(item, index) => (
             <List.Item
               actions={[
@@ -176,10 +178,10 @@ export default function FeaturedContent() {
         />
       </Card>
 
-      <Card title="Featured Topics" style={{ marginBottom: 24 }}>
+      <Card title={t("settings.featured_topics")} style={{ marginBottom: 24 }}>
         <Space style={{ marginBottom: 16 }}>
           <Select
-            placeholder="Select topic to add"
+            placeholder={t("settings.select_topic_to_add")}
             style={{ width: 250 }}
             value={addTopicId}
             onChange={setAddTopicId}
@@ -187,14 +189,14 @@ export default function FeaturedContent() {
             allowClear
           />
           <Button icon={<PlusOutlined />} onClick={handleAddTopic} disabled={!addTopicId}>
-            Add
+            {t("settings.add")}
           </Button>
         </Space>
 
         <List
           bordered
           dataSource={featuredTopics}
-          locale={{ emptyText: 'No featured topics' }}
+          locale={{ emptyText: t("settings.no_featured_topics") }}
           renderItem={(item, index) => (
             <List.Item
               actions={[
@@ -240,7 +242,7 @@ export default function FeaturedContent() {
         onClick={handleSave}
         loading={savingCountries || savingTopics}
       >
-        Save Featured Content
+        {t("settings.save_featured_content")}
       </Button>
     </div>
   );

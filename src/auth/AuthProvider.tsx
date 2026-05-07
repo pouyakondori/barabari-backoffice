@@ -5,6 +5,7 @@ import type { User } from '@/types';
 import { ME_QUERY } from '@/graphql/queries/auth';
 import { LOGIN } from '@/graphql/mutations/auth';
 import { apolloClient } from '@/apollo/client';
+import fa from '@/locale/fa.json';
 
 interface AuthContextType {
   user: User | null;
@@ -74,11 +75,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } | undefined;
 
         if (!result) {
-          return { success: false, error: 'پاسخ نامعتبر از سرور' };
+          return { success: false, error: fa.auth.invalid_response };
         }
 
         if (result.user.role !== 'admin') {
-          return { success: false, error: 'شما دسترسی ادمین ندارید' };
+          return { success: false, error: fa.auth.no_admin_access };
         }
 
         localStorage.setItem('accessToken', result.accessToken);
@@ -86,7 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(result.user);
         return { success: true };
       } catch (err) {
-        const message = err instanceof Error ? err.message : 'خطای ورود';
+        const message = err instanceof Error ? err.message : fa.auth.login_error;
         return { success: false, error: message };
       }
     },

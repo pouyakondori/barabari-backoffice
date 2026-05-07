@@ -5,6 +5,7 @@ import type { ColumnsType } from 'antd/es/table';
 import type { Dayjs } from 'dayjs';
 import DataTable from '@/components/common/DataTable';
 import { usePagination } from '@/hooks/usePagination';
+import { useTranslation } from '@/locale';
 import { formatDate } from '@/utils/formatters';
 import { ADMIN_AUDIT_LOGS } from '@/graphql/queries/auditLogs';
 import type { AuditLog, PaginatedResult } from '@/types';
@@ -31,6 +32,7 @@ const ENTITY_TYPE_OPTIONS = [
 ].map((e) => ({ label: e, value: e }));
 
 export default function AuditLogPage() {
+  const { t } = useTranslation();
   const pagination = usePagination();
   const [actionFilter, setActionFilter] = useState<string | undefined>();
   const [entityTypeFilter, setEntityTypeFilter] = useState<string | undefined>();
@@ -52,7 +54,7 @@ export default function AuditLogPage() {
 
   const columns: ColumnsType<AuditLog> = [
     {
-      title: 'Admin',
+      title: t("audit.admin"),
       dataIndex: ['admin', 'displayName'],
       width: 150,
       render: (_: unknown, record: AuditLog) => (
@@ -60,7 +62,7 @@ export default function AuditLogPage() {
       ),
     },
     {
-      title: 'Action',
+      title: t("audit.action"),
       dataIndex: 'action',
       width: 100,
       render: (action: string) => (
@@ -68,13 +70,13 @@ export default function AuditLogPage() {
       ),
     },
     {
-      title: 'Entity Type',
+      title: t("audit.entity_type"),
       dataIndex: 'entityType',
       width: 120,
       render: (type: string) => <Tag>{type}</Tag>,
     },
     {
-      title: 'Entity ID',
+      title: t("audit.entity_id"),
       dataIndex: 'entityId',
       width: 130,
       render: (id: string) => (
@@ -84,7 +86,7 @@ export default function AuditLogPage() {
       ),
     },
     {
-      title: 'Date',
+      title: t("audit.date"),
       dataIndex: 'createdAt',
       width: 140,
       render: (date: string) => formatDate(date, 'YYYY/MM/DD HH:mm'),
@@ -93,7 +95,7 @@ export default function AuditLogPage() {
       defaultSortOrder: 'descend',
     },
     {
-      title: 'Details',
+      title: t("audit.details"),
       dataIndex: 'details',
       ellipsis: true,
       render: (details: string) => (
@@ -122,7 +124,7 @@ export default function AuditLogPage() {
         extra={
           <Space wrap>
             <Select
-              placeholder="Action"
+              placeholder={t("audit.action")}
               allowClear
               style={{ width: 130 }}
               value={actionFilter}
@@ -133,7 +135,7 @@ export default function AuditLogPage() {
               options={ACTION_OPTIONS}
             />
             <Select
-              placeholder="Entity type"
+              placeholder={t("audit.entity_type_filter")}
               allowClear
               style={{ width: 140 }}
               value={entityTypeFilter}

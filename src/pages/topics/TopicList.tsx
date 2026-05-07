@@ -9,12 +9,14 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import { usePagination } from '@/hooks/usePagination';
 import { useDebounce } from '@/hooks/useDebounce';
 import { localized } from '@/utils/formatters';
+import { useTranslation } from '@/locale';
 import { ROUTES, TOPIC_CATEGORIES } from '@/utils/constants';
 import { GET_TOPICS } from '@/graphql/queries/topics';
 import { ADMIN_DELETE_TOPIC } from '@/graphql/mutations/topics';
 import type { Topic, PaginatedResult } from '@/types';
 
 export default function TopicList() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const pagination = usePagination();
   const [search, setSearch] = useState('');
@@ -34,7 +36,7 @@ export default function TopicList() {
   const [deleteTopic, { loading: deleting }] = useMutation(ADMIN_DELETE_TOPIC, {
     refetchQueries: [{ query: GET_TOPICS }],
     onCompleted: () => {
-      message.success('Topic deleted successfully');
+      message.success(t("topics.topic_deleted"));
       setDeleteTarget(null);
     },
     onError: (err: any) => message.error(err.message),
@@ -42,33 +44,33 @@ export default function TopicList() {
 
   const columns: ColumnsType<Topic> = [
     {
-      title: 'Name',
+      title: t("topics.name"),
       dataIndex: 'name',
       render: (_: unknown, record: Topic) => localized(record.name),
     },
     {
-      title: 'Slug',
+      title: t("topics.slug"),
       dataIndex: 'slug',
     },
     {
-      title: 'Category',
+      title: t("topics.category"),
       dataIndex: 'category',
       render: (val: string) => <Tag color="blue">{val}</Tag>,
     },
     {
-      title: 'Order',
+      title: t("topics.order"),
       dataIndex: 'order',
       width: 80,
       sorter: (a: Topic, b: Topic) => a.order - b.order,
     },
     {
-      title: 'Clauses',
+      title: t("topics.clauses"),
       dataIndex: 'clauseCount',
       width: 90,
       render: (val: number | undefined) => val ?? 0,
     },
     {
-      title: 'Actions',
+      title: t("topics.actions"),
       width: 120,
       render: (_: unknown, record: Topic) => (
         <Space>
@@ -97,7 +99,7 @@ export default function TopicList() {
         columns={columns}
         dataSource={topics}
         loading={loading}
-        searchPlaceholder="Search topics..."
+        searchPlaceholder={t("topics.search_placeholder")}
         onSearch={setSearch}
         pagination={{
           current: pagination.page,
@@ -108,7 +110,7 @@ export default function TopicList() {
         extra={
           <Space>
             <Select
-              placeholder="Filter by category"
+              placeholder={t("topics.filter_category")}
               allowClear
               style={{ width: 200 }}
               value={category}
@@ -123,7 +125,7 @@ export default function TopicList() {
               icon={<PlusOutlined />}
               onClick={() => navigate(ROUTES.TOPIC_CREATE)}
             >
-              Add Topic
+              {t("topics.add_topic")}
             </Button>
           </Space>
         }
@@ -131,8 +133,8 @@ export default function TopicList() {
 
       <ConfirmModal
         open={!!deleteTarget}
-        title="Delete Topic"
-        content={`Are you sure you want to delete "${deleteTarget ? localized(deleteTarget.name) : ''}"?`}
+        title={t("topics.delete_topic")}
+        content={`${t("topics.delete_topic")} "${deleteTarget ? localized(deleteTarget.name) : ''}"?`}
         onConfirm={() => {
           if (deleteTarget) {
             deleteTopic({ variables: { id: deleteTarget.id } });

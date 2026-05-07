@@ -1,10 +1,12 @@
 import type { ReactNode } from 'react';
 import { Layout, theme } from 'antd';
+import { useTranslation } from '@/locale';
 
 const { Content } = Layout;
 
 export function AuthLayout({ children }: { children: ReactNode }) {
   const { token } = theme.useToken();
+  const { t } = useTranslation();
 
   return (
     <Layout style={{ minHeight: '100vh', background: token.colorBgLayout }}>
@@ -18,7 +20,7 @@ export function AuthLayout({ children }: { children: ReactNode }) {
         }}
       >
         <h1 style={{ marginBottom: 32, fontSize: 28, fontWeight: 700 }}>
-          Barabari Admin
+          {t("app.brand")}
         </h1>
         {children}
       </Content>

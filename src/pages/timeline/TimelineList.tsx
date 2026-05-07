@@ -9,12 +9,14 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import { usePagination } from '@/hooks/usePagination';
 import { localized, formatDate } from '@/utils/formatters';
 import { ROUTES } from '@/utils/constants';
+import { useTranslation } from '@/locale';
 import { GET_TIMELINE_EVENTS } from '@/graphql/queries/timeline';
 import { GET_COUNTRIES } from '@/graphql/queries/countries';
 import { DELETE_TIMELINE_EVENT } from '@/graphql/mutations/timeline';
 import type { TimelineEvent, PaginatedResult, Country } from '@/types';
 
 export default function TimelineList() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const pagination = usePagination();
   const [countryFilter, setCountryFilter] = useState<string | undefined>();
@@ -38,7 +40,7 @@ export default function TimelineList() {
   const [deleteEvent, { loading: deleting }] = useMutation(DELETE_TIMELINE_EVENT, {
     refetchQueries: [{ query: GET_TIMELINE_EVENTS }],
     onCompleted: () => {
-      message.success('Event deleted successfully');
+      message.success(t("timeline.event_deleted"));
       setDeleteTarget(null);
     },
     onError: (err: any) => message.error(err.message),
@@ -46,18 +48,18 @@ export default function TimelineList() {
 
   const columns: ColumnsType<TimelineEvent> = [
     {
-      title: 'Title',
+      title: t("timeline.title"),
       dataIndex: 'title',
       render: (_: unknown, record: TimelineEvent) => localized(record.title),
     },
     {
-      title: 'Country',
+      title: t("timeline.country"),
       dataIndex: ['country', 'name'],
       width: 140,
       render: (_: unknown, record: TimelineEvent) => localized(record.country.name),
     },
     {
-      title: 'Date',
+      title: t("timeline.date"),
       dataIndex: 'date',
       width: 130,
       render: (date: string) => formatDate(date),
@@ -65,13 +67,13 @@ export default function TimelineList() {
         new Date(a.date).getTime() - new Date(b.date).getTime(),
     },
     {
-      title: 'Order',
+      title: t("timeline.order"),
       dataIndex: 'order',
       width: 80,
       sorter: (a: TimelineEvent, b: TimelineEvent) => a.order - b.order,
     },
     {
-      title: 'Actions',
+      title: t("timeline.actions"),
       width: 120,
       render: (_: unknown, record: TimelineEvent) => (
         <Space>
@@ -114,7 +116,7 @@ export default function TimelineList() {
         extra={
           <Space>
             <Select
-              placeholder="Filter by country"
+              placeholder={t("timeline.filter_country")}
               allowClear
               style={{ width: 180 }}
               value={countryFilter}
@@ -129,7 +131,7 @@ export default function TimelineList() {
               icon={<PlusOutlined />}
               onClick={() => navigate(ROUTES.TIMELINE_CREATE)}
             >
-              Add Event
+              {t("timeline.add_event")}
             </Button>
           </Space>
         }
@@ -137,8 +139,8 @@ export default function TimelineList() {
 
       <ConfirmModal
         open={!!deleteTarget}
-        title="Delete Event"
-        content={`Are you sure you want to delete "${deleteTarget ? localized(deleteTarget.title) : ''}"?`}
+        title={t("timeline.delete_event")}
+        content={`${t("timeline.confirm_delete")} "${deleteTarget ? localized(deleteTarget.title) : ''}"?`}
         onConfirm={() => {
           if (deleteTarget) {
             deleteEvent({ variables: { id: deleteTarget.id } });

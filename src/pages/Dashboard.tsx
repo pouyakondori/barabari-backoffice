@@ -15,6 +15,7 @@ import UserGrowthChart from '@/components/dashboard/UserGrowthChart';
 import VoteChart from '@/components/dashboard/VoteChart';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import { ROUTES } from '@/utils/constants';
+import { useTranslation } from '@/locale';
 
 const { Title } = Typography;
 
@@ -48,6 +49,7 @@ const recentSignups = [
 ];
 
 export function Dashboard() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { data, loading, error } = useQuery<{ platformStats: PlatformStats }>(PLATFORM_STATS);
 
@@ -55,18 +57,18 @@ export function Dashboard() {
   const stats = data?.platformStats;
 
   if (error) {
-    return <Result status="error" title="خطا در بارگذاری داشبورد" subTitle={error.message} />;
+    return <Result status="error" title={t("dashboard.loading_error")} subTitle={error.message} />;
   }
 
   return (
     <div>
-      <Title level={3}>داشبورد</Title>
+      <Title level={3}>{t("dashboard.title")}</Title>
 
       <Spin spinning={loading}>
         <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
           <Col xs={24} sm={12} lg={6}>
             <StatCard
-              title="کشورها"
+              title={t("dashboard.countries")}
               value={stats?.totalCountries ?? 0}
               icon={<GlobalOutlined />}
               color="#52c41a"
@@ -75,7 +77,7 @@ export function Dashboard() {
           </Col>
           <Col xs={24} sm={12} lg={6}>
             <StatCard
-              title="بندها"
+              title={t("dashboard.clauses")}
               value={stats?.totalClauses ?? 0}
               icon={<UserOutlined />}
               loading={loading}
@@ -83,7 +85,7 @@ export function Dashboard() {
           </Col>
           <Col xs={24} sm={12} lg={6}>
             <StatCard
-              title="آرا"
+              title={t("dashboard.votes")}
               value={stats?.totalVotes ?? 0}
               icon={<BarChartOutlined />}
               color="#722ed1"
@@ -92,7 +94,7 @@ export function Dashboard() {
           </Col>
           <Col xs={24} sm={12} lg={6}>
             <StatCard
-              title="نظرات"
+              title={t("dashboard.comments")}
               value={stats?.totalComments ?? 0}
               icon={<CommentOutlined />}
               color="#13c2c2"
@@ -114,14 +116,14 @@ export function Dashboard() {
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={12}>
           <RecentActivity
-            title="نظرات در انتظار تایید"
+            title={t("dashboard.pending_comments")}
             items={pendingItems}
             onItemClick={() => navigate(ROUTES.COMMENTS)}
           />
         </Col>
         <Col xs={24} lg={12}>
           <RecentActivity
-            title="ثبت‌نام‌های اخیر"
+            title={t("dashboard.recent_signups")}
             items={recentSignups}
             onItemClick={(id) => navigate(ROUTES.USER_DETAIL.replace(':id', id))}
           />

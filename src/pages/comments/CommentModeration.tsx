@@ -24,6 +24,7 @@ import StatusBadge from '@/components/common/StatusBadge';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import { usePagination } from '@/hooks/usePagination';
 import { formatDate } from '@/utils/formatters';
+import { useTranslation } from '@/locale';
 import { ADMIN_COMMENTS, ADMIN_PENDING_COUNT } from '@/graphql/queries/comments';
 import {
   ADMIN_APPROVE_COMMENT,
@@ -46,6 +47,7 @@ const REFETCH = [
 ];
 
 export default function CommentModeration() {
+  const { t } = useTranslation();
   const pagination = usePagination();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('pending');
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
@@ -79,38 +81,38 @@ export default function CommentModeration() {
 
   const [approveComment, { loading: approving }] = useMutation(ADMIN_APPROVE_COMMENT, {
     ...mutationOpts,
-    onCompleted: () => message.success('Comment approved'),
+    onCompleted: () => message.success(t("comments.approved")),
   });
   const [rejectComment, { loading: rejecting }] = useMutation(ADMIN_REJECT_COMMENT, {
     ...mutationOpts,
-    onCompleted: () => message.success('Comment rejected'),
+    onCompleted: () => message.success(t("comments.rejected")),
   });
   const [deleteComment, { loading: deletingOne }] = useMutation(ADMIN_DELETE_COMMENT, {
     ...mutationOpts,
-    onCompleted: () => message.success('Comment deleted'),
+    onCompleted: () => message.success(t("comments.deleted")),
   });
   const [restoreComment, { loading: restoring }] = useMutation(ADMIN_RESTORE_COMMENT, {
     ...mutationOpts,
-    onCompleted: () => message.success('Comment restored'),
+    onCompleted: () => message.success(t("comments.restored")),
   });
   const [bulkApprove, { loading: bulkApproving }] = useMutation(ADMIN_BULK_APPROVE_COMMENTS, {
     ...mutationOpts,
     onCompleted: () => {
-      message.success('Comments approved');
+      message.success(t("comments.bulk_approved"));
       setSelectedRowKeys([]);
     },
   });
   const [bulkReject, { loading: bulkRejecting }] = useMutation(ADMIN_BULK_REJECT_COMMENTS, {
     ...mutationOpts,
     onCompleted: () => {
-      message.success('Comments rejected');
+      message.success(t("comments.bulk_rejected"));
       setSelectedRowKeys([]);
     },
   });
   const [bulkDelete, { loading: bulkDeleting }] = useMutation(ADMIN_BULK_DELETE_COMMENTS, {
     ...mutationOpts,
     onCompleted: () => {
-      message.success('Comments deleted');
+      message.success(t("comments.bulk_deleted"));
       setSelectedRowKeys([]);
     },
   });
@@ -128,7 +130,7 @@ export default function CommentModeration() {
     return (
       <Space size="small">
         {(status === 'pending' || status === 'rejected') && (
-          <Tooltip title="Approve">
+          <Tooltip title={t("comments.approve_tooltip")}>
             <Button
               type="link"
               icon={<CheckCircleOutlined />}
@@ -139,7 +141,7 @@ export default function CommentModeration() {
           </Tooltip>
         )}
         {(status === 'pending' || status === 'approved') && (
-          <Tooltip title="Reject">
+          <Tooltip title={t("comments.reject_tooltip")}>
             <Button
               type="link"
               icon={<CloseCircleOutlined />}
@@ -150,7 +152,7 @@ export default function CommentModeration() {
           </Tooltip>
         )}
         {status === 'deleted' ? (
-          <Tooltip title="Restore">
+          <Tooltip title={t("comments.restore_tooltip")}>
             <Button
               type="link"
               icon={<UndoOutlined />}
@@ -159,15 +161,15 @@ export default function CommentModeration() {
             />
           </Tooltip>
         ) : (
-          <Tooltip title="Delete">
+          <Tooltip title={t("comments.delete_tooltip")}>
             <Button
               type="link"
               danger
               icon={<DeleteOutlined />}
               onClick={() =>
                 openConfirm(
-                  'Delete Comment',
-                  'Are you sure you want to delete this comment?',
+                  t("comments.delete_title"),
+                  t("comments.delete_confirm"),
                   () => deleteComment({ variables: { id } }),
                   true,
                 )
@@ -181,7 +183,7 @@ export default function CommentModeration() {
 
   const columns: ColumnsType<Comment> = [
     {
-      title: 'User',
+      title: t("comments.user"),
       dataIndex: 'user',
       width: 180,
       render: (_: unknown, record: Comment) => (
@@ -192,7 +194,7 @@ export default function CommentModeration() {
       ),
     },
     {
-      title: 'Comment',
+      title: t("comments.comment"),
       dataIndex: 'text',
       ellipsis: true,
       render: (text: string) => (
@@ -202,7 +204,7 @@ export default function CommentModeration() {
       ),
     },
     {
-      title: 'Clause',
+      title: t("comments.clause"),
       dataIndex: 'clauseId',
       width: 120,
       render: (clauseId: string) => (
@@ -212,13 +214,13 @@ export default function CommentModeration() {
       ),
     },
     {
-      title: 'Status',
+      title: t("comments.status"),
       dataIndex: 'status',
       width: 100,
       render: (status: string) => <StatusBadge status={status} />,
     },
     {
-      title: 'Date',
+      title: t("comments.date"),
       dataIndex: 'createdAt',
       width: 130,
       render: (date: string) => formatDate(date),
@@ -227,7 +229,7 @@ export default function CommentModeration() {
       defaultSortOrder: 'descend',
     },
     {
-      title: 'Actions',
+      title: t("comments.actions"),
       width: 140,
       render: (_: unknown, record: Comment) => renderActions(record),
     },
@@ -240,62 +242,62 @@ export default function CommentModeration() {
     {
       label: (
         <Badge count={pendingCount} size="small" offset={[8, -2]}>
-          <span style={{ padding: '0 8px' }}>Pending</span>
+          <span style={{ padding: '0 8px' }}>{t("comments.pending")}</span>
         </Badge>
       ),
       value: 'pending',
     },
-    { label: 'Approved', value: 'approved' },
-    { label: 'Rejected', value: 'rejected' },
-    { label: 'Deleted', value: 'deleted' },
-    { label: 'All', value: 'all' },
+    { label: t("comments.approved_label"), value: 'approved' },
+    { label: t("comments.rejected_label"), value: 'rejected' },
+    { label: t("comments.deleted_label"), value: 'deleted' },
+    { label: t("comments.all"), value: 'all' },
   ];
 
   const bulkToolbar = selectedRowKeys.length > 0 && (
     <Space style={{ marginBottom: 16 }}>
-      <Text strong>{selectedRowKeys.length} selected</Text>
+      <Text strong>{selectedRowKeys.length} {t("comments.selected")}</Text>
       <Button
         type="primary"
         icon={<CheckCircleOutlined />}
         onClick={() =>
           openConfirm(
-            'Bulk Approve',
-            `Approve ${selectedRowKeys.length} comments?`,
+            t("comments.bulk_approve"),
+            `${t("comments.bulk_approve")} ${selectedRowKeys.length}?`,
             () => bulkApprove({ variables: { ids: selectedRowKeys } }),
           )
         }
         loading={bulkApproving}
         style={{ backgroundColor: '#52c41a', borderColor: '#52c41a' }}
       >
-        Bulk Approve
+        {t("comments.bulk_approve")}
       </Button>
       <Button
         icon={<CloseCircleOutlined />}
         onClick={() =>
           openConfirm(
-            'Bulk Reject',
-            `Reject ${selectedRowKeys.length} comments?`,
+            t("comments.bulk_reject"),
+            `${t("comments.bulk_reject")} ${selectedRowKeys.length}?`,
             () => bulkReject({ variables: { ids: selectedRowKeys } }),
           )
         }
         loading={bulkRejecting}
       >
-        Bulk Reject
+        {t("comments.bulk_reject")}
       </Button>
       <Button
         danger
         icon={<DeleteOutlined />}
         onClick={() =>
           openConfirm(
-            'Bulk Delete',
-            `Delete ${selectedRowKeys.length} comments?`,
+            t("comments.bulk_delete"),
+            `${t("comments.bulk_delete")} ${selectedRowKeys.length}?`,
             () => bulkDelete({ variables: { ids: selectedRowKeys } }),
             true,
           )
         }
         loading={bulkDeleting}
       >
-        Bulk Delete
+        {t("comments.bulk_delete")}
       </Button>
     </Space>
   );

@@ -1,4 +1,5 @@
 import { Typography, Upload } from "antd";
+import { useTranslation } from '@/locale';
 import { InboxOutlined } from "@ant-design/icons";
 import type { UploadFile } from "antd";
 
@@ -15,9 +16,10 @@ interface FileUploadProps {
 export default function FileUpload({
   value,
   onChange,
-  label = "File",
+  label,
   accept,
 }: FileUploadProps) {
+  const { t } = useTranslation();
   const handleChange = (info: { fileList: UploadFile[] }) => {
     const file = info.fileList[info.fileList.length - 1];
     if (file?.originFileObj) {
@@ -27,11 +29,11 @@ export default function FileUpload({
 
   return (
     <div style={{ marginBottom: 16 }}>
-      <Text strong>{label}</Text>
+      <Text strong>{label ?? t("upload.file_label")}</Text>
       <div style={{ marginTop: 8 }}>
         {value && (
           <div style={{ marginBottom: 8 }}>
-            <Text type="secondary">Current file: {value}</Text>
+            <Text type="secondary">{t("upload.current_file").replace("{value}", value)}</Text>
           </div>
         )}
         <Dragger
@@ -45,7 +47,7 @@ export default function FileUpload({
             <InboxOutlined />
           </p>
           <p className="ant-upload-text">
-            Click or drag a file to upload
+            {t("upload.drag_file")}
           </p>
         </Dragger>
       </div>

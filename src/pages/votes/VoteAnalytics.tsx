@@ -29,6 +29,7 @@ import {
   Cell,
 } from 'recharts';
 import type { Dayjs } from 'dayjs';
+import { useTranslation } from '@/locale';
 
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
@@ -70,8 +71,7 @@ const MOCK_TOTAL = { agree: 4980, disagree: 2340, total: 7320 };
 
 const PIE_COLORS = ['#52c41a', '#ff4d4f'];
 
-const COUNTRY_OPTIONS = [
-  { label: 'All Countries', value: '' },
+const COUNTRY_OPTIONS_STATIC = [
   { label: 'Iran', value: 'iran' },
   { label: 'Turkey', value: 'turkey' },
   { label: 'Egypt', value: 'egypt' },
@@ -79,8 +79,14 @@ const COUNTRY_OPTIONS = [
 ];
 
 export default function VoteAnalytics() {
+  const { t } = useTranslation();
   const [_dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null] | null>(null);
   const [_country, setCountry] = useState('');
+
+  const COUNTRY_OPTIONS = useMemo(
+    () => [{ label: t("votes.all_countries"), value: '' }, ...COUNTRY_OPTIONS_STATIC],
+    [t],
+  );
 
   const agreePercent = Math.round((MOCK_TOTAL.agree / MOCK_TOTAL.total) * 100);
 
@@ -94,31 +100,31 @@ export default function VoteAnalytics() {
 
   const clauseColumns: ColumnsType<TopClause> = [
     {
-      title: 'Clause Text',
+      title: t("votes.clause_text"),
       dataIndex: 'text',
       ellipsis: true,
     },
     {
-      title: 'Country',
+      title: t("votes.country"),
       dataIndex: 'country',
       width: 100,
     },
     {
-      title: 'Agree',
+      title: t("votes.agree"),
       dataIndex: 'agree',
       width: 80,
       sorter: (a, b) => a.agree - b.agree,
       render: (val: number) => <span style={{ color: '#52c41a' }}>{val}</span>,
     },
     {
-      title: 'Disagree',
+      title: t("votes.disagree"),
       dataIndex: 'disagree',
       width: 90,
       sorter: (a, b) => a.disagree - b.disagree,
       render: (val: number) => <span style={{ color: '#ff4d4f' }}>{val}</span>,
     },
     {
-      title: 'Total',
+      title: t("votes.total"),
       dataIndex: 'total',
       width: 80,
       sorter: (a, b) => a.total - b.total,
@@ -134,13 +140,13 @@ export default function VoteAnalytics() {
           <Col>
             <RangePicker
               onChange={(dates) => setDateRange(dates)}
-              placeholder={['Start Date', 'End Date']}
+              placeholder={[t("votes.start_date"), t("votes.end_date")]}
             />
           </Col>
           <Col>
             <Select
               style={{ width: 200 }}
-              placeholder="Filter by country"
+              placeholder={t("votes.filter_country")}
               options={COUNTRY_OPTIONS}
               onChange={setCountry}
               allowClear
@@ -154,7 +160,7 @@ export default function VoteAnalytics() {
         <Col xs={24} sm={8}>
           <Card>
             <Statistic
-              title="Total Votes"
+              title={t("votes.total_votes")}
               value={MOCK_TOTAL.total}
               prefix={<BarChartOutlined />}
             />
@@ -163,7 +169,7 @@ export default function VoteAnalytics() {
         <Col xs={24} sm={8}>
           <Card>
             <Statistic
-              title="Agree Votes"
+              title={t("votes.agree_votes")}
               value={MOCK_TOTAL.agree}
               prefix={<LikeOutlined />}
               valueStyle={{ color: '#52c41a' }}
@@ -173,7 +179,7 @@ export default function VoteAnalytics() {
         <Col xs={24} sm={8}>
           <Card>
             <Statistic
-              title="Disagree Votes"
+              title={t("votes.disagree_votes")}
               value={MOCK_TOTAL.disagree}
               prefix={<DislikeOutlined />}
               valueStyle={{ color: '#ff4d4f' }}
@@ -185,7 +191,7 @@ export default function VoteAnalytics() {
       {/* Charts */}
       <Row gutter={24} style={{ marginBottom: 24 }}>
         <Col xs={24} lg={16}>
-          <Card title="Votes Over Time">
+          <Card title={t("votes.votes_over_time")}>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={MOCK_VOTES_OVER_TIME}>
                 <XAxis dataKey="date" />
@@ -199,7 +205,7 @@ export default function VoteAnalytics() {
           </Card>
         </Col>
         <Col xs={24} lg={8}>
-          <Card title="Agree / Disagree Ratio">
+          <Card title={t("votes.agree_disagree_ratio")}>
             <div style={{ textAlign: 'center', marginBottom: 16 }}>
               <Progress
                 type="circle"
@@ -233,7 +239,7 @@ export default function VoteAnalytics() {
       </Row>
 
       {/* Top clauses table */}
-      <Card title={<Title level={5} style={{ margin: 0 }}>Top Clauses by Vote Count</Title>}>
+      <Card title={<Title level={5} style={{ margin: 0 }}>{t("votes.top_clauses")}</Title>}>
         <Table<TopClause>
           columns={clauseColumns}
           dataSource={MOCK_TOP_CLAUSES}

@@ -9,6 +9,7 @@ import { GET_CONSTITUTIONS } from '@/graphql/queries/constitutions';
 import DataTable from '@/components/common/DataTable';
 import { usePagination } from '@/hooks/usePagination';
 import { localized } from '@/utils/formatters';
+import { useTranslation } from '@/locale';
 
 const { Title } = Typography;
 
@@ -23,6 +24,7 @@ interface ConstitutionRow {
 }
 
 export function ConstitutionList() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const pagination = usePagination();
 
@@ -53,22 +55,22 @@ export function ConstitutionList() {
 
   const columns: ColumnsType<ConstitutionRow> = useMemo(() => [
     {
-      title: 'کشور',
+      title: t("constitutions.country"),
       dataIndex: 'countryName',
       key: 'countryName',
     },
     {
-      title: 'تعداد فصول',
+      title: t("constitutions.chapter_count"),
       dataIndex: 'chapterCount',
       key: 'chapterCount',
     },
     {
-      title: 'تعداد اصول',
+      title: t("constitutions.article_count"),
       dataIndex: 'articleCount',
       key: 'articleCount',
     },
     {
-      title: 'تعداد بندها',
+      title: t("constitutions.clause_count"),
       dataIndex: 'clauseCount',
       key: 'clauseCount',
     },
@@ -78,14 +80,14 @@ export function ConstitutionList() {
       render: (_: unknown, record: ConstitutionRow) =>
         record.pdfUrl ? (
           <a href={record.pdfUrl} target="_blank" rel="noopener noreferrer">
-            <Tag color="blue">دانلود</Tag>
+            <Tag color="blue">{t("constitutions.download")}</Tag>
           </a>
         ) : (
-          <Tag color="default">ندارد</Tag>
+          <Tag color="default">{t("constitutions.none")}</Tag>
         ),
     },
     {
-      title: 'عملیات',
+      title: t("constitutions.actions"),
       key: 'actions',
       render: (_: unknown, record: ConstitutionRow) => (
         <Space>
@@ -96,21 +98,21 @@ export function ConstitutionList() {
             onClick={() => navigate(`/constitutions/${record.countrySlug}`)}
           />
           <Button type="link" size="small" icon={<UploadOutlined />} disabled>
-            آپلود PDF
+            {t("constitutions.upload_pdf")}
           </Button>
         </Space>
       ),
     },
-  ], [navigate]);
+  ], [navigate, t]);
 
-  if (error) return <Result status="error" title="خطا در بارگذاری" subTitle={error.message} />;
+  if (error) return <Result status="error" title={t("constitutions.loading_error")} subTitle={error.message} />;
 
   return (
     <div>
       <Space style={{ marginBottom: 16, justifyContent: 'space-between', width: '100%' }}>
-        <Title level={4} style={{ margin: 0 }}>قوانین اساسی</Title>
+        <Title level={4} style={{ margin: 0 }}>{t("constitutions.title")}</Title>
         <Button type="primary" icon={<PlusOutlined />} disabled>
-          افزودن قانون اساسی
+          {t("constitutions.add_constitution")}
         </Button>
       </Space>
 

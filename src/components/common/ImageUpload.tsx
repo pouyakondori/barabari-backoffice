@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Image, Typography, Upload } from "antd";
+import { useTranslation } from '@/locale';
 import { InboxOutlined } from "@ant-design/icons";
 import type { UploadFile } from "antd";
 
@@ -15,8 +16,9 @@ interface ImageUploadProps {
 export default function ImageUpload({
   value,
   onChange,
-  label = "Image",
+  label,
 }: ImageUploadProps) {
+  const { t } = useTranslation();
   const [previewUrl, setPreviewUrl] = useState<string | undefined>(value);
 
   const handleChange = (info: { fileList: UploadFile[] }) => {
@@ -30,13 +32,13 @@ export default function ImageUpload({
 
   return (
     <div style={{ marginBottom: 16 }}>
-      <Text strong>{label}</Text>
+      <Text strong>{label ?? t("upload.image_label")}</Text>
       <div style={{ marginTop: 8 }}>
         {previewUrl && (
           <div style={{ marginBottom: 8 }}>
             <Image
               src={previewUrl}
-              alt="Preview"
+              alt={t("upload.preview")}
               style={{ maxWidth: 200, maxHeight: 200, objectFit: "contain" }}
             />
           </div>
@@ -52,7 +54,7 @@ export default function ImageUpload({
             <InboxOutlined />
           </p>
           <p className="ant-upload-text">
-            Click or drag an image to upload
+            {t("upload.drag_image")}
           </p>
         </Dragger>
       </div>

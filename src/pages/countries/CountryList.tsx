@@ -13,8 +13,10 @@ import { usePagination } from '@/hooks/usePagination';
 import { useDebounce } from '@/hooks/useDebounce';
 import { localized, formatNumber } from '@/utils/formatters';
 import { ROUTES } from '@/utils/constants';
+import { useTranslation } from '@/locale';
 
 export function CountryList() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const pagination = usePagination();
   const [search, setSearch] = useState('');
@@ -38,45 +40,45 @@ export function CountryList() {
     if (!deleteTarget) return;
     try {
       await deleteCountry({ variables: { id: deleteTarget.id } });
-      void message.success('کشور حذف شد');
+      void message.success(t("countries.country_deleted"));
       setDeleteTarget(null);
       await refetch();
     } catch {
-      void message.error('خطا در حذف کشور');
+      void message.error(t("countries.delete_error"));
     }
   };
 
   const columns: ColumnsType<Country> = useMemo(() => [
     {
-      title: 'پرچم',
+      title: t("countries.flag"),
       dataIndex: 'flag',
       key: 'flag',
       width: 60,
       render: (flag: string) => <Avatar src={flag} shape="square" size="small" />,
     },
     {
-      title: 'نام',
+      title: t("countries.name"),
       key: 'name',
       render: (_: unknown, record: Country) => localized(record.name),
     },
     {
-      title: 'اسلاگ',
+      title: t("countries.slug"),
       dataIndex: 'slug',
       key: 'slug',
     },
     {
-      title: 'جمعیت',
+      title: t("countries.population"),
       dataIndex: 'population',
       key: 'population',
       render: (v: number) => formatNumber(v),
     },
     {
-      title: 'کد کشور',
+      title: t("countries.country_code"),
       dataIndex: 'countryCode',
       key: 'countryCode',
     },
     {
-      title: 'عملیات',
+      title: t("countries.actions"),
       key: 'actions',
       render: (_: unknown, record: Country) => (
         <Space>
@@ -96,7 +98,7 @@ export function CountryList() {
         </Space>
       ),
     },
-  ], [navigate]);
+  ], [navigate, t]);
 
   return (
     <div>
@@ -104,7 +106,7 @@ export function CountryList() {
         columns={columns}
         dataSource={countries}
         loading={loading}
-        searchPlaceholder="جستجو بر اساس نام کشور..."
+        searchPlaceholder={t("countries.search_placeholder")}
         onSearch={setSearch}
         pagination={{
           current: pagination.page,
@@ -118,14 +120,14 @@ export function CountryList() {
             icon={<PlusOutlined />}
             onClick={() => navigate(ROUTES.COUNTRY_CREATE)}
           >
-            افزودن کشور
+            {t("countries.add_country")}
           </Button>
         }
       />
       <ConfirmModal
         open={!!deleteTarget}
-        title="حذف کشور"
-        content={`آیا از حذف کشور «${deleteTarget ? localized(deleteTarget.name) : ''}» مطمئن هستید؟`}
+        title={t("countries.delete_country")}
+        content={`${t("countries.delete_country")} «${deleteTarget ? localized(deleteTarget.name) : ''}»?`}
         onConfirm={() => void handleDelete()}
         onCancel={() => setDeleteTarget(null)}
         loading={deleteLoading}

@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import BilingualInput from '@/components/common/BilingualInput';
 import { ROUTES } from '@/utils/constants';
 import { localized } from '@/utils/formatters';
+import { useTranslation } from '@/locale';
 import { GET_TIMELINE_EVENTS } from '@/graphql/queries/timeline';
 import { GET_COUNTRIES } from '@/graphql/queries/countries';
 import { CREATE_TIMELINE_EVENT, UPDATE_TIMELINE_EVENT } from '@/graphql/mutations/timeline';
@@ -28,6 +29,7 @@ const INITIAL_STATE: TimelineFormState = {
 };
 
 export default function TimelineForm() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEditing = !!id;
@@ -60,7 +62,7 @@ export default function TimelineForm() {
 
   const [createEvent, { loading: creating }] = useMutation(CREATE_TIMELINE_EVENT, {
     onCompleted: () => {
-      message.success('Event created successfully');
+      message.success(t("timeline.event_created"));
       navigate(ROUTES.TIMELINE);
     },
     onError: (err: any) => message.error(err.message),
@@ -68,7 +70,7 @@ export default function TimelineForm() {
 
   const [updateEvent, { loading: updating }] = useMutation(UPDATE_TIMELINE_EVENT, {
     onCompleted: () => {
-      message.success('Event updated successfully');
+      message.success(t("timeline.event_updated"));
       navigate(ROUTES.TIMELINE);
     },
     onError: (err: any) => message.error(err.message),
@@ -80,7 +82,7 @@ export default function TimelineForm() {
 
   const handleSubmit = () => {
     if (!form.title.fa || !form.countryId || !form.date) {
-      message.warning('Please fill in required fields (Title FA, Country, Date)');
+      message.warning(t("timeline.fill_required"));
       return;
     }
 
@@ -109,16 +111,16 @@ export default function TimelineForm() {
   }));
 
   return (
-    <Card title={isEditing ? 'Edit Timeline Event' : 'Create Timeline Event'} style={{ maxWidth: 800 }}>
+    <Card title={isEditing ? t("timeline.edit_event") : t("timeline.create_event")} style={{ maxWidth: 800 }}>
       <BilingualInput
-        label="Title"
+        label={t("timeline.title_label")}
         value={form.title}
         onChange={(title) => setForm((s) => ({ ...s, title }))}
         required
       />
 
       <BilingualInput
-        label="Description"
+        label={t("timeline.description")}
         value={form.description}
         onChange={(description) => setForm((s) => ({ ...s, description }))}
         textarea
@@ -126,7 +128,7 @@ export default function TimelineForm() {
 
       <div style={{ marginBottom: 16 }}>
         <span style={{ fontWeight: 600 }}>
-          Date <span style={{ color: 'red' }}>*</span>
+          {t("timeline.date")} <span style={{ color: 'red' }}>*</span>
         </span>
         <div style={{ marginTop: 8 }}>
           <DatePicker
@@ -141,11 +143,11 @@ export default function TimelineForm() {
 
       <div style={{ marginBottom: 16 }}>
         <span style={{ fontWeight: 600 }}>
-          Country <span style={{ color: 'red' }}>*</span>
+          {t("timeline.country")} <span style={{ color: 'red' }}>*</span>
         </span>
         <div style={{ marginTop: 8 }}>
           <Select
-            placeholder="Select country"
+            placeholder={t("timeline.select_country")}
             style={{ width: '100%' }}
             value={form.countryId}
             onChange={(countryId) => setForm((s) => ({ ...s, countryId }))}
@@ -155,7 +157,7 @@ export default function TimelineForm() {
       </div>
 
       <div style={{ marginBottom: 24 }}>
-        <span style={{ fontWeight: 600 }}>Order</span>
+        <span style={{ fontWeight: 600 }}>{t("timeline.order")}</span>
         <div style={{ marginTop: 8 }}>
           <InputNumber
             min={0}
@@ -168,9 +170,9 @@ export default function TimelineForm() {
 
       <Space>
         <Button type="primary" onClick={handleSubmit} loading={creating || updating}>
-          {isEditing ? 'Update' : 'Create'}
+          {isEditing ? t("timeline.update") : t("timeline.create")}
         </Button>
-        <Button onClick={() => navigate(ROUTES.TIMELINE)}>Cancel</Button>
+        <Button onClick={() => navigate(ROUTES.TIMELINE)}>{t("timeline.cancel")}</Button>
       </Space>
     </Card>
   );

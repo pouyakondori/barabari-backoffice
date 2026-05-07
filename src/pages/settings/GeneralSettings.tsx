@@ -3,6 +3,7 @@ import { useMutation, useQuery } from '@apollo/client/react';
 import { Button, Card, Divider, Input, Spin, Switch, Typography, message } from 'antd';
 import { GET_SETTINGS } from '@/graphql/queries/settings';
 import { ADMIN_UPDATE_SETTINGS } from '@/graphql/mutations/settings';
+import { useTranslation } from '@/locale';
 
 const { TextArea } = Input;
 const { Text, Title } = Typography;
@@ -28,6 +29,7 @@ interface SettingsFormState {
 }
 
 export default function GeneralSettings() {
+  const { t } = useTranslation();
   const [form, setForm] = useState<SettingsFormState>({
     platformName: '',
     platformDescription: '',
@@ -54,7 +56,7 @@ export default function GeneralSettings() {
   }, [settingsData]);
 
   const [updateSettings, { loading: saving }] = useMutation(ADMIN_UPDATE_SETTINGS, {
-    onCompleted: () => message.success('Settings saved successfully'),
+    onCompleted: () => message.success(t("settings.settings_saved")),
     onError: (err: any) => message.error(err.message),
   });
 
@@ -82,35 +84,35 @@ export default function GeneralSettings() {
   return (
     <div style={{ maxWidth: 700 }}>
       <Card>
-        <Title level={5}>Platform</Title>
+        <Title level={5}>{t("settings.platform")}</Title>
 
         <div style={{ marginBottom: 16 }}>
-          <Text strong>Platform Name</Text>
+          <Text strong>{t("settings.platform_name")}</Text>
           <Input
             style={{ marginTop: 8 }}
             value={form.platformName}
             onChange={(e) => setForm((s) => ({ ...s, platformName: e.target.value }))}
-            placeholder="Barabari"
+            placeholder={t("settings.platform_name_placeholder")}
           />
         </div>
 
         <div style={{ marginBottom: 16 }}>
-          <Text strong>Platform Description</Text>
+          <Text strong>{t("settings.platform_description")}</Text>
           <TextArea
             style={{ marginTop: 8 }}
             rows={3}
             value={form.platformDescription}
             onChange={(e) => setForm((s) => ({ ...s, platformDescription: e.target.value }))}
-            placeholder="A platform for constitutional comparison"
+            placeholder={t("settings.platform_description_placeholder")}
           />
         </div>
 
         <Divider />
 
-        <Title level={5}>Social Links</Title>
+        <Title level={5}>{t("settings.social_links")}</Title>
 
         <div style={{ marginBottom: 16 }}>
-          <Text strong>Twitter</Text>
+          <Text strong>{t("settings.twitter")}</Text>
           <Input
             style={{ marginTop: 8 }}
             value={form.twitter}
@@ -120,7 +122,7 @@ export default function GeneralSettings() {
         </div>
 
         <div style={{ marginBottom: 16 }}>
-          <Text strong>Instagram</Text>
+          <Text strong>{t("settings.instagram")}</Text>
           <Input
             style={{ marginTop: 8 }}
             value={form.instagram}
@@ -130,7 +132,7 @@ export default function GeneralSettings() {
         </div>
 
         <div style={{ marginBottom: 16 }}>
-          <Text strong>Telegram</Text>
+          <Text strong>{t("settings.telegram")}</Text>
           <Input
             style={{ marginTop: 8 }}
             value={form.telegram}
@@ -147,14 +149,14 @@ export default function GeneralSettings() {
             onChange={(checked) => setForm((s) => ({ ...s, maintenanceMode: checked }))}
           />
           <div>
-            <Text strong>Maintenance Mode</Text>
+            <Text strong>{t("settings.maintenance_mode")}</Text>
             <br />
-            <Text type="secondary">When enabled, the platform will show a maintenance page to visitors.</Text>
+            <Text type="secondary">{t("settings.maintenance_description")}</Text>
           </div>
         </div>
 
         <Button type="primary" onClick={handleSubmit} loading={saving}>
-          Save Settings
+          {t("settings.save_settings")}
         </Button>
       </Card>
     </div>
