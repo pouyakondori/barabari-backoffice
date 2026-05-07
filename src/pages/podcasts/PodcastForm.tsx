@@ -1,0 +1,223 @@
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useMutation, useQuery } from '@apollo/client/react';
+import { Button, Card, DatePicker, InputNumber, Select, Space, Spin, message } from 'antd';
+import dayjs from 'dayjs';
+import BilingualInput from '@/components/common/BilingualInput';
+import FileUpload from '@/components/common/FileUpload';
+import ImageUpload from '@/components/common/ImageUpload';
+import { ROUTES } from '@/utils/constants';
+import { localized } from '@/utils/formatters';
+import { ADMIN_PODCAST } from '@/graphql/queries/podcasts';
+import { GET_COUNTRIES } from '@/graphql/queries/countries';
+import { GET_TOPICS } from '@/graphql/queries/topics';
+import { ADMIN_CREATE_PODCAST, ADMIN_UPDATE_PODCAST } from '@/graphql/mutations/podcasts';
+import type { LocalizedString, Podcast, PaginatedResult, Country, Topic } from '@/types';
+
+interface PodcastFormState {
+  title: LocalizedString;
+  description: LocalizedString;
+  audioUrl: string;
+  coverImage: string;
+  countryId: string | undefined;
+  topicId: string | undefined;
+  duration: number;
+  publishedAt: string;
+}
+
+const INITIAL_STATE: PodcastFormState = {
+  title: { fa: '', en: '' },
+  description: { fa: '', en: '' },
+  audioUrl: '',
+  coverImage: '',
+  countryId: undefined,
+  topicId: undefined,
+  duration: 0,
+  publishedAt: '',
+};
+
+export default function PodcastForm() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const isEditing = !!id;
+  const [form, setForm] = useState<PodcastFormState>(INITIAL_STATE);
+
+  const { loading: loadingPodcast, data: podcastData } = useQuery<{ podcast: Podcast }>(ADMIN_PODCAST, {
+    variables: { id },
+    skip: !isEditing,
+  });
+
+  useEffect(() => {
+    if (podcastData?.podcast) {
+      const p = podcastData.podcast;
+      setForm({
+        title: { fa: p.title.fa, en: p.title.en },
+        description: { fa: p.description.fa, en: p.description.en },
+        audioUrl: p.audioUrl,
+        coverImage: p.coverImage ?? '',
+        countryId: p.country?.id,
+        topicId: p.topic?.id,
+        duration: p.duration,
+        publishedAt: p.publishedAt,
+      });
+    }
+  }, [podcastData]);
+
+  const { data: countriesData } = useQuery<{ countries: PaginatedResult<Country> }>(GET_COUNTRIES, {
+    variables: { limit: 100, offset: 0 },
+  });
+
+  const { data: topicsData } = useQuery<{ topics: PaginatedResult<Topic> }>(GET_TOPICS, {
+    variables: { limit: 100, offset: 0 },
+  });
+
+  const [createPodcast, { loading: creating }] = useMutation(ADMIN_CREATE_PODCAST, {
+    onCompleted: () => {
+      message.success('Podcast created successfully');
+      navigate(ROUTES.PODCASTS);
+    },
+    onError: (err: any) => message.error(err.message),
+  });
+
+  const [updatePodcast, { loading: updating }] = useMutation(ADMIN_UPDATE_PODCAST, {
+    onCompleted: () => {
+      message.success('Podcast updated successfully');
+      navigate(ROUTES.PODCASTS);
+    },
+    onError: (err: any) => message.error(err.message),
+  });
+
+  useEffect(() => {
+    if (!isEditing) setForm(INITIAL_STATE);
+  }, [isEditing]);
+
+  const handleSubmit = () => {
+    if (!form.title.fa) {
+      message.warning('Please enter a title (Farsi)');
+      return;
+    }
+
+    const input = {
+      title: form.title,
+      description: form.description,
+      audioUrl: form.audioUrl,
+      coverImage: form.coverImage || undefined,
+      countryId: form.countryId,
+      topicId: form.topicId,
+      duration: form.duration,
+      publishedAt: form.publishedAt || undefined,
+    };
+
+    if (isEditing) {
+      updatePodcast({ variables: { id, input } });
+    } else {
+      createPodcast({ variables: { input } });
+    }
+  };
+
+  if (isEditing && loadingPodcast) {
+    return <Spin size="large" style={{ display: 'block', margin: '100px auto' }} />;
+  }
+
+  const countryOptions = (countriesData?.countries.items ?? []).map((c: any) => ({
+    label: localized(c.name),
+    value: c.id,
+  }));
+
+  const topicOptions = (topicsData?.topics.items ?? []).map((t: any) => ({
+    label: localized(t.name),
+    value: t.id,
+  }));
+
+  return (
+    <Card title={isEditing ? 'Edit Podcast' : 'Create Podcast'} style={{ maxWidth: 800 }}>
+      <BilingualInput
+        label="Title"
+        value={form.title}
+        onChange={(title) => setForm((s) => ({ ...s, title }))}
+        required
+      />
+
+      <BilingualInput
+        label="Description"
+        value={form.description}
+        onChange={(description) => setForm((s) => ({ ...s, description }))}
+        textarea
+      />
+
+      <FileUpload
+        value={form.audioUrl}
+        onChange={(audioUrl) => setForm((s) => ({ ...s, audioUrl }))}
+        label="Audio File"
+        accept="audio/*"
+      />
+
+      <ImageUpload
+        value={form.coverImage}
+        onChange={(coverImage) => setForm((s) => ({ ...s, coverImage }))}
+        label="Cover Image"
+      />
+
+      <div style={{ marginBottom: 16 }}>
+        <span style={{ fontWeight: 600 }}>Country</span>
+        <div style={{ marginTop: 8 }}>
+          <Select
+            placeholder="Select country"
+            style={{ width: '100%' }}
+            value={form.countryId}
+            onChange={(countryId) => setForm((s) => ({ ...s, countryId }))}
+            options={countryOptions}
+            allowClear
+          />
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 16 }}>
+        <span style={{ fontWeight: 600 }}>Topic</span>
+        <div style={{ marginTop: 8 }}>
+          <Select
+            placeholder="Select topic"
+            style={{ width: '100%' }}
+            value={form.topicId}
+            onChange={(topicId) => setForm((s) => ({ ...s, topicId }))}
+            options={topicOptions}
+            allowClear
+          />
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 16 }}>
+        <span style={{ fontWeight: 600 }}>Duration (minutes)</span>
+        <div style={{ marginTop: 8 }}>
+          <InputNumber
+            min={0}
+            value={form.duration}
+            onChange={(val) => setForm((s) => ({ ...s, duration: (val ?? 0) * 60 }))}
+            style={{ width: '100%' }}
+            placeholder="Duration in minutes"
+          />
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 24 }}>
+        <span style={{ fontWeight: 600 }}>Published Date</span>
+        <div style={{ marginTop: 8 }}>
+          <DatePicker
+            style={{ width: '100%' }}
+            value={form.publishedAt ? dayjs(form.publishedAt) : null}
+            onChange={(date) =>
+              setForm((s) => ({ ...s, publishedAt: date ? date.toISOString() : '' }))
+            }
+          />
+        </div>
+      </div>
+
+      <Space>
+        <Button type="primary" onClick={handleSubmit} loading={creating || updating}>
+          {isEditing ? 'Update' : 'Create'}
+        </Button>
+        <Button onClick={() => navigate(ROUTES.PODCASTS)}>Cancel</Button>
+      </Space>
+    </Card>
+  );
+}
