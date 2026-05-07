@@ -11,7 +11,6 @@ export const ADMIN_USERS = gql`
         isVerified
         isBanned
         createdAt
-        updatedAt
       }
       total
       limit
@@ -30,10 +29,6 @@ export const ADMIN_USER = gql`
       isVerified
       isBanned
       createdAt
-      updatedAt
-      commentCount
-      voteCount
-      lastLoginAt
     }
   }
 `;
