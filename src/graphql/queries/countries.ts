@@ -3,24 +3,19 @@ import { gql } from '@apollo/client';
 export const GET_COUNTRIES = gql`
   query GetCountries($limit: Int, $offset: Int, $search: String) {
     countries(limit: $limit, offset: $offset, search: $search) {
-      items {
-        id
-        name { fa en }
-        slug
-        flag
-        abstract { fa en }
-        population
-        coordinates { lat lng }
-        countryCode
-        authors { name bio image }
-        amendments { year description }
-        podcastUrl
-        videoUrl
-        createdAt
-      }
-      total
-      limit
-      offset
+      id
+      name { fa en }
+      slug
+      flag
+      abstract { fa en }
+      population
+      coordinates { lat lng }
+      countryCode
+      authors { name bio imageUrl }
+      amendments { year description { fa en } }
+      podcastUrl
+      videoUrl
+      createdAt
     }
   }
 `;
@@ -36,8 +31,8 @@ export const GET_COUNTRY = gql`
       population
       coordinates { lat lng }
       countryCode
-      authors { name bio image }
-      amendments { year description }
+      authors { name bio imageUrl }
+      amendments { year description { fa en } }
       podcastUrl
       videoUrl
       createdAt

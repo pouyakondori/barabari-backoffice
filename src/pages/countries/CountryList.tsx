@@ -4,7 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useQuery, useMutation } from '@apollo/client/react';
 import { useNavigate } from 'react-router-dom';
 import type { ColumnsType } from 'antd/es/table';
-import type { Country, PaginatedResult } from '@/types';
+import type { Country } from '@/types';
 import { GET_COUNTRIES } from '@/graphql/queries/countries';
 import { ADMIN_DELETE_COUNTRY } from '@/graphql/mutations/countries';
 import DataTable from '@/components/common/DataTable';
@@ -22,7 +22,7 @@ export function CountryList() {
 
   const debouncedSearch = useDebounce(search);
 
-  const { data, loading, refetch } = useQuery<{ countries: PaginatedResult<Country> }>(GET_COUNTRIES, {
+  const { data, loading, refetch } = useQuery<{ countries: Country[] }>(GET_COUNTRIES, {
     variables: {
       limit: pagination.pageSize,
       offset: pagination.offset,
@@ -32,8 +32,7 @@ export function CountryList() {
 
   const [deleteCountry, { loading: deleteLoading }] = useMutation(ADMIN_DELETE_COUNTRY);
 
-  const countries = data?.countries?.items ?? [];
-  const total = data?.countries?.total ?? 0;
+  const countries = data?.countries ?? [];
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -110,7 +109,7 @@ export function CountryList() {
         pagination={{
           current: pagination.page,
           pageSize: pagination.pageSize,
-          total,
+          total: countries.length,
           onChange: pagination.onChange,
         }}
         extra={
