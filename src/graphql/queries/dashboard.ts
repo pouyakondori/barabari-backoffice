@@ -3,11 +3,10 @@ import { gql } from '@apollo/client';
 export const PLATFORM_STATS = gql`
   query PlatformStats {
     platformStats {
-      totalUsers
       totalCountries
+      totalClauses
       totalVotes
       totalComments
-      pendingComments
     }
   }
 `;

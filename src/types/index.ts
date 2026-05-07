@@ -125,11 +125,10 @@ export interface Podcast {
 }
 
 export interface PlatformStats {
-  totalUsers: number;
   totalCountries: number;
+  totalClauses: number;
   totalVotes: number;
   totalComments: number;
-  pendingComments: number;
 }
 
 export interface AuditLog {

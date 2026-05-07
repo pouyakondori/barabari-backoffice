@@ -5,7 +5,6 @@ import {
   GlobalOutlined,
   BarChartOutlined,
   CommentOutlined,
-  WarningOutlined,
 } from '@ant-design/icons';
 import { useQuery } from '@apollo/client/react';
 import { useNavigate } from 'react-router-dom';
@@ -65,15 +64,7 @@ export function Dashboard() {
 
       <Spin spinning={loading}>
         <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-          <Col xs={24} sm={12} lg={4}>
-            <StatCard
-              title="کاربران"
-              value={stats?.totalUsers ?? 0}
-              icon={<UserOutlined />}
-              loading={loading}
-            />
-          </Col>
-          <Col xs={24} sm={12} lg={4}>
+          <Col xs={24} sm={12} lg={6}>
             <StatCard
               title="کشورها"
               value={stats?.totalCountries ?? 0}
@@ -82,7 +73,15 @@ export function Dashboard() {
               loading={loading}
             />
           </Col>
-          <Col xs={24} sm={12} lg={4}>
+          <Col xs={24} sm={12} lg={6}>
+            <StatCard
+              title="بندها"
+              value={stats?.totalClauses ?? 0}
+              icon={<UserOutlined />}
+              loading={loading}
+            />
+          </Col>
+          <Col xs={24} sm={12} lg={6}>
             <StatCard
               title="آرا"
               value={stats?.totalVotes ?? 0}
@@ -91,21 +90,12 @@ export function Dashboard() {
               loading={loading}
             />
           </Col>
-          <Col xs={24} sm={12} lg={4}>
+          <Col xs={24} sm={12} lg={6}>
             <StatCard
               title="نظرات"
               value={stats?.totalComments ?? 0}
               icon={<CommentOutlined />}
               color="#13c2c2"
-              loading={loading}
-            />
-          </Col>
-          <Col xs={24} sm={12} lg={8}>
-            <StatCard
-              title="نظرات در انتظار"
-              value={stats?.pendingComments ?? 0}
-              icon={<WarningOutlined />}
-              color="#fa541c"
               loading={loading}
             />
           </Col>

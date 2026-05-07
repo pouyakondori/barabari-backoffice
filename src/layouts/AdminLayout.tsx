@@ -18,11 +18,8 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
 } from '@ant-design/icons';
-import { useQuery } from '@apollo/client/react';
 import type { MenuProps } from 'antd';
 import { useAuth } from '@/auth/useAuth';
-import { PLATFORM_STATS } from '@/graphql/queries/dashboard';
-import type { PlatformStats } from '@/types';
 
 const { Header, Sider, Content } = Layout;
 
@@ -33,10 +30,8 @@ export function AdminLayout() {
   const { user, logout } = useAuth();
   const { token: themeToken } = theme.useToken();
 
-  const { data: statsData } = useQuery<{ platformStats: PlatformStats }>(PLATFORM_STATS, {
-    pollInterval: 60_000,
-  });
-  const pendingComments = statsData?.platformStats?.pendingComments ?? 0;
+  // TODO: add pendingComments to backend stats
+  const pendingComments = 0;
 
   const selectedKey = getSelectedKey(location.pathname);
 
