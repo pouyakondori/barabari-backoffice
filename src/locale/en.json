@@ -408,7 +408,10 @@
     "preview": "Preview",
     "drag_file": "Click or drag a file to upload",
     "drag_image": "Click or drag an image to upload",
-    "current_file": "Current file: {value}"
+    "current_file": "Current file: {value}",
+    "uploading": "Uploading...",
+    "upload_success": "File uploaded successfully",
+    "upload_failed": "File upload failed"
   },
   "slug": {
     "label": "Slug"

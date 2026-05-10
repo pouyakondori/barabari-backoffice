@@ -418,7 +418,10 @@
     "preview": "پیش‌نمایش",
     "drag_file": "کلیک کنید یا فایل را بکشید",
     "drag_image": "کلیک کنید یا تصویر را بکشید",
-    "current_file": "فایل فعلی: {value}"
+    "current_file": "فایل فعلی: {value}",
+    "uploading": "در حال آپلود...",
+    "upload_success": "فایل با موفقیت آپلود شد",
+    "upload_failed": "آپلود فایل ناموفق بود"
   },
   "slug": {
     "label": "اسلاگ"

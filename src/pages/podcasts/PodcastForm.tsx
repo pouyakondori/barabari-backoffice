@@ -13,7 +13,7 @@ import { ADMIN_PODCAST } from '@/graphql/queries/podcasts';
 import { GET_COUNTRIES } from '@/graphql/queries/countries';
 import { GET_TOPICS } from '@/graphql/queries/topics';
 import { ADMIN_CREATE_PODCAST, ADMIN_UPDATE_PODCAST } from '@/graphql/mutations/podcasts';
-import type { LocalizedString, Podcast, PaginatedResult, Country, Topic } from '@/types';
+import type { LocalizedString, Podcast, Country, Topic } from '@/types';
 
 interface PodcastFormState {
   title: LocalizedString;
@@ -44,14 +44,14 @@ export default function PodcastForm() {
   const isEditing = !!id;
   const [form, setForm] = useState<PodcastFormState>(INITIAL_STATE);
 
-  const { loading: loadingPodcast, data: podcastData } = useQuery<{ podcast: Podcast }>(ADMIN_PODCAST, {
+  const { loading: loadingPodcast, data: podcastData } = useQuery<{ adminPodcast: Podcast }>(ADMIN_PODCAST, {
     variables: { id },
     skip: !isEditing,
   });
 
   useEffect(() => {
-    if (podcastData?.podcast) {
-      const p = podcastData.podcast;
+    if (podcastData?.adminPodcast) {
+      const p = podcastData.adminPodcast;
       setForm({
         title: { fa: p.title.fa, en: p.title.en },
         description: { fa: p.description.fa, en: p.description.en },
@@ -65,11 +65,11 @@ export default function PodcastForm() {
     }
   }, [podcastData]);
 
-  const { data: countriesData } = useQuery<{ countries: PaginatedResult<Country> }>(GET_COUNTRIES, {
+  const { data: countriesData } = useQuery<{ countries: Country[] }>(GET_COUNTRIES, {
     variables: { limit: 100, offset: 0 },
   });
 
-  const { data: topicsData } = useQuery<{ topics: PaginatedResult<Topic> }>(GET_TOPICS, {
+  const { data: topicsData } = useQuery<{ topics: Topic[] }>(GET_TOPICS, {
     variables: { limit: 100, offset: 0 },
   });
 
@@ -121,12 +121,12 @@ export default function PodcastForm() {
     return <Spin size="large" style={{ display: 'block', margin: '100px auto' }} />;
   }
 
-  const countryOptions = (countriesData?.countries.items ?? []).map((c: any) => ({
+  const countryOptions = (countriesData?.countries ?? []).map((c: any) => ({
     label: localized(c.name),
     value: c.id,
   }));
 
-  const topicOptions = (topicsData?.topics.items ?? []).map((t: any) => ({
+  const topicOptions = (topicsData?.topics ?? []).map((t: any) => ({
     label: localized(t.name),
     value: t.id,
   }));

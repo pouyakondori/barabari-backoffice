@@ -15,7 +15,7 @@ import { ADMIN_PODCASTS } from '@/graphql/queries/podcasts';
 import { GET_TOPICS } from '@/graphql/queries/topics';
 import { GET_COUNTRIES } from '@/graphql/queries/countries';
 import { ADMIN_DELETE_PODCAST } from '@/graphql/mutations/podcasts';
-import type { Podcast, PaginatedResult, Country, Topic } from '@/types';
+import type { Podcast, Country, Topic } from '@/types';
 
 export default function PodcastList() {
   const { t } = useTranslation();
@@ -27,7 +27,7 @@ export default function PodcastList() {
   const [deleteTarget, setDeleteTarget] = useState<Podcast | null>(null);
   const debouncedSearch = useDebounce(search);
 
-  const { data, loading } = useQuery<{ podcasts: PaginatedResult<Podcast> }>(ADMIN_PODCASTS, {
+  const { data, loading } = useQuery<{ adminPodcasts: PaginatedResult<Podcast> }>(ADMIN_PODCASTS, {
     variables: {
       limit: pagination.pageSize,
       offset: pagination.offset,
@@ -37,11 +37,11 @@ export default function PodcastList() {
     },
   });
 
-  const { data: countriesData } = useQuery<{ countries: PaginatedResult<Country> }>(GET_COUNTRIES, {
+  const { data: countriesData } = useQuery<{ countries: Country[] }>(GET_COUNTRIES, {
     variables: { limit: 100, offset: 0 },
   });
 
-  const { data: topicsData } = useQuery<{ topics: PaginatedResult<Topic> }>(GET_TOPICS, {
+  const { data: topicsData } = useQuery<{ topics: Topic[] }>(GET_TOPICS, {
     variables: { limit: 100, offset: 0 },
   });
 
@@ -115,15 +115,15 @@ export default function PodcastList() {
     },
   ];
 
-  const podcasts = data?.podcasts.items ?? [];
-  const total = data?.podcasts.total ?? 0;
+  const podcasts = data?.adminPodcasts.items ?? [];
+  const total = data?.adminPodcasts.total ?? 0;
 
-  const countryOptions = (countriesData?.countries.items ?? []).map((c: any) => ({
+  const countryOptions = (countriesData?.countries ?? []).map((c: any) => ({
     label: localized(c.name),
     value: c.id,
   }));
 
-  const topicOptions = (topicsData?.topics.items ?? []).map((t: any) => ({
+  const topicOptions = (topicsData?.topics ?? []).map((t: any) => ({
     label: localized(t.name),
     value: t.id,
   }));
