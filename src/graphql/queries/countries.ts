@@ -15,6 +15,15 @@ export const GET_COUNTRIES = gql`
       amendments { year description { fa en } }
       podcastUrl
       videoUrl
+      systemOfGovernment
+      hdi
+      independenceDate
+      officialLanguages
+      gdp
+      economicType
+      religiousComposition { religion percentage }
+      urbanizationRate
+      corruptionIndex
       createdAt
     }
   }
@@ -35,6 +44,44 @@ export const GET_COUNTRY = gql`
       amendments { year description { fa en } }
       podcastUrl
       videoUrl
+      systemOfGovernment
+      hdi
+      independenceDate
+      officialLanguages
+      gdp
+      economicType
+      religiousComposition { religion percentage }
+      urbanizationRate
+      corruptionIndex
+      createdAt
+    }
+  }
+`;
+
+export const GET_COUNTRY_BY_ID = gql`
+  query GetCountryById($id: ID!) {
+    countryById(id: $id) {
+      id
+      name { fa en }
+      slug
+      flag
+      abstract { fa en }
+      population
+      coordinates { lat lng }
+      countryCode
+      authors { name bio imageUrl }
+      amendments { year description { fa en } }
+      podcastUrl
+      videoUrl
+      systemOfGovernment
+      hdi
+      independenceDate
+      officialLanguages
+      gdp
+      economicType
+      religiousComposition { religion percentage }
+      urbanizationRate
+      corruptionIndex
       createdAt
     }
   }

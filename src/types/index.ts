@@ -14,6 +14,11 @@ export interface User {
   updatedAt: string;
 }
 
+export interface ReligiousComposition {
+  religion: string;
+  percentage: number;
+}
+
 export interface Country {
   id: string;
   name: LocalizedString;
@@ -27,6 +32,15 @@ export interface Country {
   amendments: Amendment[];
   podcastUrl?: string;
   videoUrl?: string;
+  systemOfGovernment?: string;
+  hdi?: number;
+  independenceDate?: string;
+  officialLanguages?: string[];
+  gdp?: string;
+  economicType?: string;
+  religiousComposition?: ReligiousComposition[];
+  urbanizationRate?: number;
+  corruptionIndex?: number;
   createdAt: string;
 }
 
