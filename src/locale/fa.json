@@ -147,7 +147,19 @@
     "religion_name": "مذهب",
     "religion_percentage": "درصد (%)",
     "add_religion": "افزودن مذهب",
-    "delete_religion": "حذف"
+    "delete_religion": "حذف",
+    "geographic_info": "اطلاعات جغرافیایی",
+    "map_zoom": "بزرگنمایی نقشه",
+    "map_zoom_help": "سطح بزرگنمایی نقشه (۱-۲۰، کمتر = دورنمای بیشتر)",
+    "total_area": "مساحت کل (کیلومتر مربع)",
+    "total_area_placeholder": "مثلاً ۳۵۷۰۲۲",
+    "landlocked": "محصور در خشکی",
+    "borders": "کشورهای همسایه (اسلاگ‌ها)",
+    "borders_help": "اسلاگ‌های کشورهای همسایه با کاما جدا شده",
+    "borders_placeholder": "مثلاً spain, france, germany",
+    "natural_resources": "منابع طبیعی",
+    "natural_resources_help": "لیست منابع طبیعی با کاما جدا شده",
+    "natural_resources_placeholder": "مثلاً نفت، زغال‌سنگ، چوب، ماهی"
   },
   "constitutions": {
     "country": "کشور",

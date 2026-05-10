@@ -9,8 +9,12 @@ export const GET_COUNTRIES = gql`
       flag
       abstract { fa en }
       population
-      coordinates { lat lng }
+      coordinates { lat lng zoom }
       countryCode
+      totalArea
+      landlocked
+      borders
+      naturalResources
       authors { name bio imageUrl }
       amendments { year description { fa en } }
       podcastUrl
@@ -38,8 +42,12 @@ export const GET_COUNTRY = gql`
       flag
       abstract { fa en }
       population
-      coordinates { lat lng }
+      coordinates { lat lng zoom }
       countryCode
+      totalArea
+      landlocked
+      borders
+      naturalResources
       authors { name bio imageUrl }
       amendments { year description { fa en } }
       podcastUrl
@@ -67,8 +75,12 @@ export const GET_COUNTRY_BY_ID = gql`
       flag
       abstract { fa en }
       population
-      coordinates { lat lng }
+      coordinates { lat lng zoom }
       countryCode
+      totalArea
+      landlocked
+      borders
+      naturalResources
       authors { name bio imageUrl }
       amendments { year description { fa en } }
       podcastUrl

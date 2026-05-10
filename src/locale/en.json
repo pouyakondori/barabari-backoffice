@@ -137,7 +137,19 @@
     "religion_name": "Religion",
     "religion_percentage": "Percentage (%)",
     "add_religion": "Add Religion",
-    "delete_religion": "Delete"
+    "delete_religion": "Delete",
+    "geographic_info": "Geographic Data",
+    "map_zoom": "Map Zoom",
+    "map_zoom_help": "Zoom level for the map (1-20, lower = zoomed out)",
+    "total_area": "Total Area (km²)",
+    "total_area_placeholder": "e.g. 357022",
+    "landlocked": "Landlocked",
+    "borders": "Neighboring Countries (slugs)",
+    "borders_help": "Comma-separated slugs of neighboring countries",
+    "borders_placeholder": "e.g. spain, france, germany",
+    "natural_resources": "Natural Resources",
+    "natural_resources_help": "Comma-separated list of natural resources",
+    "natural_resources_placeholder": "e.g. Oil, Coal, Timber, Fish"
   },
   "constitutions": {
     "country": "Country",

@@ -26,8 +26,12 @@ export interface Country {
   flag: string;
   abstract: LocalizedString;
   population: number;
-  coordinates: { lat: number; lng: number };
+  coordinates: { lat: number; lng: number; zoom?: number };
   countryCode: string;
+  totalArea?: number;
+  landlocked?: boolean;
+  borders?: string[];
+  naturalResources?: string[];
   authors: Author[];
   amendments: Amendment[];
   podcastUrl?: string;

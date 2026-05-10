@@ -11,6 +11,7 @@ import {
   Result,
   Typography,
   message,
+  Switch,
 } from 'antd';
 import { MinusCircleOutlined, PlusOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { useQuery, useMutation } from '@apollo/client/react';
@@ -35,6 +36,11 @@ interface CountryFormValues {
   countryCode: string;
   lat: number;
   lng: number;
+  zoom?: number;
+  totalArea?: number;
+  landlocked?: boolean;
+  bordersStr?: string;
+  naturalResourcesStr?: string;
   podcastUrl?: string;
   videoUrl?: string;
   authors: { name: { fa: string; en: string }; bio: { fa: string; en: string }; image: string }[];
@@ -76,6 +82,11 @@ export function CountryForm() {
         countryCode: c.countryCode,
         lat: c.coordinates.lat,
         lng: c.coordinates.lng,
+        zoom: c.coordinates.zoom ?? undefined,
+        totalArea: c.totalArea ?? undefined,
+        landlocked: c.landlocked ?? false,
+        bordersStr: c.borders?.join(', ') ?? '',
+        naturalResourcesStr: c.naturalResources?.join(', ') ?? '',
         podcastUrl: c.podcastUrl,
         videoUrl: c.videoUrl,
         authors: c.authors.map((a: any) => ({
@@ -111,6 +122,14 @@ export function CountryForm() {
       ? values.officialLanguagesStr.split(',').map((l) => l.trim()).filter(Boolean)
       : [];
 
+    const borders = values.bordersStr
+      ? values.bordersStr.split(',').map((b) => b.trim()).filter(Boolean)
+      : [];
+
+    const naturalResources = values.naturalResourcesStr
+      ? values.naturalResourcesStr.split(',').map((r) => r.trim()).filter(Boolean)
+      : [];
+
     const input = {
       name: values.name,
       slug: values.slug,
@@ -118,7 +137,11 @@ export function CountryForm() {
       abstract: values.abstract,
       population: values.population,
       countryCode: values.countryCode,
-      coordinates: { lat: values.lat, lng: values.lng },
+      coordinates: { lat: values.lat, lng: values.lng, zoom: values.zoom ?? undefined },
+      totalArea: values.totalArea ?? undefined,
+      landlocked: values.landlocked ?? false,
+      borders,
+      naturalResources,
       podcastUrl: values.podcastUrl || undefined,
       videoUrl: values.videoUrl || undefined,
       authors: values.authors ?? [],
@@ -213,7 +236,29 @@ export function CountryForm() {
             <Form.Item name="lng" label={t("countries.longitude")}>
               <InputNumber step={0.0001} style={{ width: 200 }} />
             </Form.Item>
+            <Form.Item name="zoom" label={t("countries.map_zoom")} tooltip={t("countries.map_zoom_help")}>
+              <InputNumber min={1} max={20} style={{ width: 120 }} />
+            </Form.Item>
           </Space>
+        </Card>
+
+        <Card title={t("countries.geographic_info")} style={{ marginBottom: 24 }}>
+          <Space size="large" style={{ width: '100%' }} wrap>
+            <Form.Item name="totalArea" label={t("countries.total_area")}>
+              <InputNumber min={0} style={{ width: 200 }} placeholder={t("countries.total_area_placeholder")} />
+            </Form.Item>
+            <Form.Item name="landlocked" label={t("countries.landlocked")} valuePropName="checked">
+              <Switch />
+            </Form.Item>
+          </Space>
+
+          <Form.Item name="bordersStr" label={t("countries.borders")} tooltip={t("countries.borders_help")}>
+            <Input placeholder={t("countries.borders_placeholder")} style={{ width: '100%', maxWidth: 500 }} />
+          </Form.Item>
+
+          <Form.Item name="naturalResourcesStr" label={t("countries.natural_resources")} tooltip={t("countries.natural_resources_help")}>
+            <Input placeholder={t("countries.natural_resources_placeholder")} style={{ width: '100%', maxWidth: 500 }} />
+          </Form.Item>
 
           <Space size="large" style={{ width: '100%' }}>
             <Form.Item name="podcastUrl" label={t("countries.podcast_link")}>
