@@ -197,9 +197,19 @@
     "clause_text": "متن بند",
     "confirm_delete": "تایید حذف",
     "confirm_delete_msg": "آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است.",
+    "confirm_delete_message": "آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است.",
     "chapter_prefix": "فصل",
     "article_prefix": "اصل",
-    "clause_prefix": "بند"
+    "clause_prefix": "بند",
+    "title": "قوانین اساسی",
+    "add_constitution": "افزودن قانون اساسی",
+    "download": "دانلود",
+    "download_pdf": "دانلود PDF",
+    "none": "ندارد",
+    "upload_pdf": "آپلود PDF",
+    "back_to_list": "بازگشت به لیست",
+    "clause_placeholder_fa": "متن بند به فارسی...",
+    "clause_placeholder_en": "Clause text in English..."
   },
   "topics": {
     "name": "نام",

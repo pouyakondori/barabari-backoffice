@@ -187,9 +187,19 @@
     "clause_text": "Clause Text",
     "confirm_delete": "Confirm Delete",
     "confirm_delete_msg": "Are you sure you want to delete this item? This action cannot be undone.",
+    "confirm_delete_message": "Are you sure you want to delete this item? This action cannot be undone.",
     "chapter_prefix": "Chapter",
     "article_prefix": "Article",
-    "clause_prefix": "Clause"
+    "clause_prefix": "Clause",
+    "title": "Constitutions",
+    "add_constitution": "Add Constitution",
+    "download": "Download",
+    "download_pdf": "Download PDF",
+    "none": "None",
+    "upload_pdf": "Upload PDF",
+    "back_to_list": "Back to List",
+    "clause_placeholder_fa": "متن بند به فارسی...",
+    "clause_placeholder_en": "Clause text in English..."
   },
   "topics": {
     "name": "Name",
