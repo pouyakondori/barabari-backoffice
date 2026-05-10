@@ -41,8 +41,6 @@ interface CountryFormValues {
   landlocked?: boolean;
   bordersStr?: string;
   naturalResourcesStr?: string;
-  podcastUrl?: string;
-  videoUrl?: string;
   authors: { name: { fa: string; en: string }; bio: { fa: string; en: string }; image: string }[];
   amendments: { year: number; description: { fa: string; en: string } }[];
   systemOfGovernment?: string;
@@ -87,8 +85,6 @@ export function CountryForm() {
         landlocked: c.landlocked ?? false,
         bordersStr: c.borders?.join(', ') ?? '',
         naturalResourcesStr: c.naturalResources?.join(', ') ?? '',
-        podcastUrl: c.podcastUrl,
-        videoUrl: c.videoUrl,
         authors: c.authors.map((a: any) => ({
           name: { fa: a.name.fa, en: a.name.en },
           bio: { fa: a.bio.fa, en: a.bio.en },
@@ -142,8 +138,6 @@ export function CountryForm() {
       landlocked: values.landlocked ?? false,
       borders,
       naturalResources,
-      podcastUrl: values.podcastUrl || undefined,
-      videoUrl: values.videoUrl || undefined,
       authors: values.authors ?? [],
       amendments: values.amendments ?? [],
       systemOfGovernment: values.systemOfGovernment || undefined,
@@ -260,14 +254,6 @@ export function CountryForm() {
             <Input placeholder={t("countries.natural_resources_placeholder")} style={{ width: '100%', maxWidth: 500 }} />
           </Form.Item>
 
-          <Space size="large" style={{ width: '100%' }}>
-            <Form.Item name="podcastUrl" label={t("countries.podcast_link")}>
-              <Input placeholder="https://..." style={{ width: 300 }} />
-            </Form.Item>
-            <Form.Item name="videoUrl" label={t("countries.video_link")}>
-              <Input placeholder="https://..." style={{ width: 300 }} />
-            </Form.Item>
-          </Space>
         </Card>
 
         <Card title={t("countries.authors")} style={{ marginBottom: 24 }}>

@@ -22,8 +22,6 @@ export const CountrySchema = z.object({
     lat: z.number().min(-90).max(90),
     lng: z.number().min(-180).max(180),
   }),
-  podcastUrl: z.string().url().optional(),
-  videoUrl: z.string().url().optional(),
 });
 
 export const TopicSchema = z.object({

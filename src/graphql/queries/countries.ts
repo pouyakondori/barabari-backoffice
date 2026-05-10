@@ -17,8 +17,6 @@ export const GET_COUNTRIES = gql`
       naturalResources
       authors { name bio imageUrl }
       amendments { year description { fa en } }
-      podcastUrl
-      videoUrl
       systemOfGovernment
       hdi
       independenceDate
@@ -50,8 +48,6 @@ export const GET_COUNTRY = gql`
       naturalResources
       authors { name bio imageUrl }
       amendments { year description { fa en } }
-      podcastUrl
-      videoUrl
       systemOfGovernment
       hdi
       independenceDate
@@ -83,8 +79,6 @@ export const GET_COUNTRY_BY_ID = gql`
       naturalResources
       authors { name bio imageUrl }
       amendments { year description { fa en } }
-      podcastUrl
-      videoUrl
       systemOfGovernment
       hdi
       independenceDate
