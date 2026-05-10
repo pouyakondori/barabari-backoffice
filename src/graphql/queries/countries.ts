@@ -15,7 +15,7 @@ export const GET_COUNTRIES = gql`
       landlocked
       borders
       naturalResources
-      authors { name bio imageUrl }
+      authors { name { fa en } bio { fa en } imageUrl }
       amendments { year description { fa en } }
       systemOfGovernment
       hdi
@@ -46,7 +46,7 @@ export const GET_COUNTRY = gql`
       landlocked
       borders
       naturalResources
-      authors { name bio imageUrl }
+      authors { name { fa en } bio { fa en } imageUrl }
       amendments { year description { fa en } }
       systemOfGovernment
       hdi
@@ -77,7 +77,7 @@ export const GET_COUNTRY_BY_ID = gql`
       landlocked
       borders
       naturalResources
-      authors { name bio imageUrl }
+      authors { name { fa en } bio { fa en } imageUrl }
       amendments { year description { fa en } }
       systemOfGovernment
       hdi

@@ -4,8 +4,8 @@ import { useTranslation } from '@/locale';
 const { Text } = Typography;
 
 interface SlugInputProps {
-  value: string;
-  onChange: (val: string) => void;
+  value?: string;
+  onChange?: (val: string) => void;
   sourceValue?: string;
   label?: string;
 }
@@ -21,7 +21,7 @@ function toSlug(text: string): string {
 }
 
 export default function SlugInput({
-  value,
+  value = '',
   onChange,
   sourceValue,
   label,
@@ -29,7 +29,7 @@ export default function SlugInput({
   const { t } = useTranslation();
   const handleGenerate = () => {
     if (sourceValue) {
-      onChange(toSlug(sourceValue));
+      onChange?.(toSlug(sourceValue));
     }
   };
 
@@ -39,7 +39,7 @@ export default function SlugInput({
       <Space.Compact style={{ width: "100%", marginTop: 8 }}>
         <Input
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onChange?.(e.target.value)}
           placeholder="url-safe-slug"
         />
         <Button onClick={handleGenerate} disabled={!sourceValue}>

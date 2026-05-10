@@ -9,7 +9,7 @@ const { Text } = Typography;
 
 interface ImageUploadProps {
   value?: string;
-  onChange: (url: string) => void;
+  onChange?: (url: string) => void;
   label?: string;
 }
 
@@ -26,7 +26,7 @@ export default function ImageUpload({
     if (file?.originFileObj) {
       const objectUrl = URL.createObjectURL(file.originFileObj);
       setPreviewUrl(objectUrl);
-      onChange(file.name);
+      onChange?.(file.name);
     }
   };
 

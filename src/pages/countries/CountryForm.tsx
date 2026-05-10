@@ -88,7 +88,7 @@ export function CountryForm() {
         authors: c.authors.map((a: any) => ({
           name: { fa: a.name.fa, en: a.name.en },
           bio: { fa: a.bio.fa, en: a.bio.en },
-          image: a.image ?? '',
+          image: a.imageUrl ?? '',
         })),
         amendments: c.amendments.map((am: any) => ({
           year: am.year,
@@ -138,7 +138,11 @@ export function CountryForm() {
       landlocked: values.landlocked ?? false,
       borders,
       naturalResources,
-      authors: values.authors ?? [],
+      authors: (values.authors ?? []).map((a: any) => ({
+        name: a.name,
+        bio: a.bio,
+        imageUrl: a.image || undefined,
+      })),
       amendments: values.amendments ?? [],
       systemOfGovernment: values.systemOfGovernment || undefined,
       hdi: values.hdi ?? undefined,
@@ -188,31 +192,32 @@ export function CountryForm() {
         initialValues={{ authors: [], amendments: [], religiousComposition: [] }}
       >
         <Card title={t("countries.main_info")} style={{ marginBottom: 24 }}>
-          <BilingualInput
-            label={t("countries.country_name")}
-            value={form.getFieldValue('name') ?? { fa: '', en: '' }}
-            onChange={(v) => {
-              form.setFieldValue('name', v);
-              setSlugSource(v.en);
-            }}
-            required
-          />
-          <SlugInput
-            value={form.getFieldValue('slug') ?? ''}
-            onChange={(v) => form.setFieldValue('slug', v)}
-            sourceValue={slugSource}
-          />
-          <ImageUpload
-            value={form.getFieldValue('flag') ?? ''}
-            onChange={(v) => form.setFieldValue('flag', v)}
-            label={t("countries.flag_label")}
-          />
-          <BilingualInput
-            label={t("countries.abstract")}
-            value={form.getFieldValue('abstract') ?? { fa: '', en: '' }}
-            onChange={(v) => form.setFieldValue('abstract', v)}
-            textarea
-          />
+          <Form.Item name="name" noStyle>
+            <BilingualInput
+              label={t("countries.country_name")}
+              onChange={(v) => {
+                form.setFieldValue('name', v);
+                setSlugSource(v.en);
+              }}
+              required
+            />
+          </Form.Item>
+          <Form.Item name="slug" noStyle>
+            <SlugInput
+              sourceValue={slugSource}
+            />
+          </Form.Item>
+          <Form.Item name="flag" noStyle>
+            <ImageUpload
+              label={t("countries.flag_label")}
+            />
+          </Form.Item>
+          <Form.Item name="abstract" noStyle>
+            <BilingualInput
+              label={t("countries.abstract")}
+              textarea
+            />
+          </Form.Item>
 
           <Space size="large">
             <Form.Item name="population" label={t("countries.population")}>
@@ -262,23 +267,21 @@ export function CountryForm() {
               <>
                 {fields.map((field) => (
                   <div key={field.key} style={{ border: '1px solid #f0f0f0', padding: 16, marginBottom: 16, borderRadius: 8 }}>
-                    <BilingualInput
-                      label={t("countries.author_name")}
-                      value={form.getFieldValue(['authors', field.name, 'name']) ?? { fa: '', en: '' }}
-                      onChange={(v) => form.setFieldValue(['authors', field.name, 'name'], v)}
-                      required
-                    />
-                    <BilingualInput
-                      label={t("countries.biography")}
-                      value={form.getFieldValue(['authors', field.name, 'bio']) ?? { fa: '', en: '' }}
-                      onChange={(v) => form.setFieldValue(['authors', field.name, 'bio'], v)}
-                      textarea
-                    />
-                    <ImageUpload
-                      value={form.getFieldValue(['authors', field.name, 'image']) ?? ''}
-                      onChange={(v) => form.setFieldValue(['authors', field.name, 'image'], v)}
-                      label={t("countries.image")}
-                    />
+                    <Form.Item name={[field.name, 'name']} noStyle>
+                      <BilingualInput
+                        label={t("countries.author_name")}
+                        required
+                      />
+                    </Form.Item>
+                    <Form.Item name={[field.name, 'bio']} noStyle>
+                      <BilingualInput
+                        label={t("countries.biography")}
+                        textarea
+                      />
+                    </Form.Item>
+                    <Form.Item name={[field.name, 'image']} label={t("countries.image")}>
+                      <Input placeholder="https://..." />
+                    </Form.Item>
                     <Button danger icon={<MinusCircleOutlined />} onClick={() => remove(field.name)}>
                       {t("countries.delete_author")}
                     </Button>
@@ -360,13 +363,13 @@ export function CountryForm() {
                     <Form.Item name={[field.name, 'year']} label={t("countries.year")} rules={[{ required: true, message: t("countries.year_required") }]}>
                       <InputNumber min={1700} max={2100} style={{ width: 150 }} />
                     </Form.Item>
-                    <BilingualInput
-                      label={t("countries.description")}
-                      value={form.getFieldValue(['amendments', field.name, 'description']) ?? { fa: '', en: '' }}
-                      onChange={(v) => form.setFieldValue(['amendments', field.name, 'description'], v)}
-                      textarea
-                      required
-                    />
+                    <Form.Item name={[field.name, 'description']} noStyle>
+                      <BilingualInput
+                        label={t("countries.description")}
+                        textarea
+                        required
+                      />
+                    </Form.Item>
                     <Button danger icon={<MinusCircleOutlined />} onClick={() => remove(field.name)}>
                       {t("countries.delete_amendment")}
                     </Button>

@@ -6,8 +6,8 @@ const { Text } = Typography;
 
 interface BilingualInputProps {
   label: string;
-  value: { fa: string; en: string };
-  onChange: (val: { fa: string; en: string }) => void;
+  value?: { fa: string; en: string };
+  onChange?: (val: { fa: string; en: string }) => void;
   textarea?: boolean;
   required?: boolean;
   rows?: number;
@@ -15,7 +15,7 @@ interface BilingualInputProps {
 
 export default function BilingualInput({
   label,
-  value,
+  value = { fa: '', en: '' },
   onChange,
   textarea = false,
   required = false,
@@ -23,6 +23,10 @@ export default function BilingualInput({
 }: BilingualInputProps) {
   const { t } = useTranslation();
   const InputComponent = textarea ? TextArea : Input;
+
+  const handleChange = (lang: 'fa' | 'en', val: string) => {
+    onChange?.({ ...value, [lang]: val });
+  };
 
   return (
     <div style={{ marginBottom: 16 }}>
@@ -36,7 +40,7 @@ export default function BilingualInput({
           <InputComponent
             dir="rtl"
             value={value.fa}
-            onChange={(e) => onChange({ ...value, fa: e.target.value })}
+            onChange={(e) => handleChange('fa', e.target.value)}
             {...(textarea ? { rows } : {})}
           />
         </Col>
@@ -44,7 +48,7 @@ export default function BilingualInput({
           <Text type="secondary">{t("common.english")}</Text>
           <InputComponent
             value={value.en}
-            onChange={(e) => onChange({ ...value, en: e.target.value })}
+            onChange={(e) => handleChange('en', e.target.value)}
             {...(textarea ? { rows } : {})}
           />
         </Col>
