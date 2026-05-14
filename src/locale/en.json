@@ -430,5 +430,13 @@
     "user_growth": "User Growth",
     "vote_activity": "Vote Activity",
     "new_users": "New Users"
+  },
+  "categories": {
+    "fundamental-rights": "Basic Rights / Fundamental Rights",
+    "power-distribution": "Power and Its Distribution",
+    "rights-justice": "Law and Justice",
+    "social-economic": "Social and Economic Rights",
+    "civic-duties": "Civic Duties",
+    "constitutional-revision": "Constitutional Review"
   }
 }

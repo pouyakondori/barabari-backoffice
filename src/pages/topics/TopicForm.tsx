@@ -128,7 +128,7 @@ export default function TopicForm() {
             style={{ width: '100%' }}
             value={form.category || undefined}
             onChange={(category) => setForm((s) => ({ ...s, category }))}
-            options={TOPIC_CATEGORIES.map((cat) => ({ label: cat, value: cat }))}
+            options={TOPIC_CATEGORIES.map((cat) => ({ label: t(`categories.${cat}`), value: cat }))}
           />
         </div>
       </div>

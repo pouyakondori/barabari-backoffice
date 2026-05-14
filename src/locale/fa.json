@@ -440,5 +440,13 @@
     "user_growth": "رشد کاربران",
     "vote_activity": "فعالیت آرا",
     "new_users": "کاربران جدید"
+  },
+  "categories": {
+    "fundamental-rights": "حقوق اولیه",
+    "power-distribution": "قدرت و توزیع آن",
+    "rights-justice": "حقوق و عدالت",
+    "social-economic": "حقوق اجتماعی و اقتصادی",
+    "civic-duties": "وظایف مدنی",
+    "constitutional-revision": "بازنگری قانون اساسی"
   }
 }

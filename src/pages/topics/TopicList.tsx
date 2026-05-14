@@ -55,7 +55,7 @@ export default function TopicList() {
     {
       title: t("topics.category"),
       dataIndex: 'category',
-      render: (val: string) => <Tag color="blue">{val}</Tag>,
+      render: (val: string) => <Tag color="blue">{t(`categories.${val}`)}</Tag>,
     },
     {
       title: t("topics.order"),
@@ -118,7 +118,7 @@ export default function TopicList() {
                 setCategory(val);
                 pagination.reset();
               }}
-              options={TOPIC_CATEGORIES.map((cat) => ({ label: cat, value: cat }))}
+              options={TOPIC_CATEGORIES.map((cat) => ({ label: t(`categories.${cat}`), value: cat }))}
             />
             <Button
               type="primary"
