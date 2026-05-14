@@ -333,7 +333,7 @@ export default function CommentModeration() {
           onChange: (keys) => setSelectedRowKeys(keys),
         }}
         extra={
-          <Text type="secondary">{total} comments</Text>
+          <Text type="secondary">{total} {t("comments.total_label")}</Text>
         }
       />
 

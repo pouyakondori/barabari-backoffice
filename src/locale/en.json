@@ -252,7 +252,8 @@
     "bulk_approve": "Bulk Approve",
     "bulk_reject": "Bulk Reject",
     "bulk_delete": "Bulk Delete",
-    "confirm_delete": "Are you sure you want to delete this comment? This action cannot be undone."
+    "confirm_delete": "Are you sure you want to delete this comment? This action cannot be undone.",
+    "total_label": "comments"
   },
   "votes": {
     "total_votes": "Total Votes",
